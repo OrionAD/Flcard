@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Fluid Cooling Flashcard Quiz</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #6c757d;
+            --bg: #f0f2f5;
+            --card-white: #ffffff;
+            --text-main: #1c1e21;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 700px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 { color: var(--primary); margin: 0; font-size: 1.5rem; }
+        .progress-bar {
+            height: 6px;
+            background: #ddd;
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        #progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.25s ease;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        /* Flashcard */
+        .flashcard {
+            perspective: 1000px;
+            height: 320px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            border-radius: 12px;
+        }
+        .flashcard.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            box-sizing: border-box;
+            border-radius: 12px;
+            background: var(--card-white);
+        }
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #f8f9ff;
+            border: 2px solid var(--primary);
+            color: var(--text-main);
+            font-size: 1.05rem;
+            line-height: 1.45;
+        }
+        .card-front {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .category-pill {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 0.72rem;
+            background: #e1e4e8;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #444;
+        }
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .controls-top {
+            display:flex;
+            gap:12px;
+            justify-content:center;
+            margin-bottom:8px;
+            align-items:center;
+        }
+        select {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #d6d6d6;
+            font-size: 1rem;
+            background: white;
+        }
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.15s;
+        }
+        .btn-prev { background: #fff; color: var(--secondary); border: 1px solid #ddd; }
+        .btn-next { background: var(--primary); color: white; }
+        button:active { transform: scale(0.98); }
+        .hint {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 0.86rem;
+            margin-top: 14px;
+        }
+        @media (max-width:600px){
+            .flashcard { height: 360px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <header>
+        <h1>Fluid Cooling Flashcard Quiz</h1>
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <div class="stats">
+            <span id="current-system">Subject: Loading</span>
+            <span id="card-count">0 / 0</span>
+        </div>
+    </header>
+
+    <div class="flashcard" id="main-card" onclick="this.classList.toggle('flipped')">
+        <div class="card-inner">
+            <div class="card-front">
+                <span class="category-pill" id="cat-label">Subject</span>
+                <div id="q-text">Loading Question...</div>
+            </div>
+            <div class="card-back">
+                <div id="a-text">Loading Answer...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-top">
+        <label for="subject-select" style="color:var(--secondary);font-weight:600;margin-right:6px;">Select Subject:</label>
+        <select id="subject-select">
+            <option value="fluid">Fluid Cooling (50)</option>
+            <option value="equipment">Equipment Cooling (50)</option>
+            <option value="pressurisation">Pressurisation (50)</option>
+        </select>
+    </div>
+
+    <div class="controls">
+        <button class="btn-prev" id="prev-btn">Previous</button>
+        <button class="btn-next" id="next-btn">Next Card</button>
+    </div>
+
+    <p class="hint">Tap the card to flip (or press Space). Use ← → to navigate.</p>
+</div>
+
+<script>
+/*
+  Three decks (50 questions each) provided by the user.
+  Each item: { q: "...", a: "..." }
+*/
+
+const fluidCooling = [
+{"q":"What are the two primary fluid cooling systems on the 787?","a":"The Power Electronics Cooling System (PECS) and the Integrated Cooling System (ICS)."},
+{"q":"What is the specific composition of the PECS liquid coolant?","a":"A mixture of 60 percent propylene-glycol and 40 percent de-ionized water (PGW)."},
+{"q":"Where are the PECS liquid cooling pump packages located?","a":"In the left and right main gear wheel wells."},
+{"q":"What is the normal operating pressure for the PECS?","a":"200 psig."},
+{"q":"Which equipment does the PECS left loop specifically cool?","a":"Supplemental cooling units (SCU) 2 and 4 condensers, SCU motor controllers 2 and 4, and equipment on the P700/E5 rack."},
+{"q":"What are the two primary functions of the Integrated Cooling System (ICS)?","a":"To provide liquid cooling for galley refrigeration and to decrease the temperature of the lower recirculation air."},
+{"q":"How many pumps are in each PECS pump package, and how do they operate?","a":"There are two pumps; one operates as primary while the other is back-up, changing roles after each flight."},
+{"q":"What is the approximate life of the PECS cooling fluid?","a":"Approximately 12,000 hours."},
+{"q":"What color is the DowFrost coolant used in these systems?","a":"Orange."},
+{"q":"What is the purpose of the PECS 3-way diverter valve (TCV)?","a":"It controls the temperature of the coolant by directing it either through or around the ram air heat exchanger."},
+{"q":"Where are the ICS Supplemental Cooling Units (SCUs) located?","a":"In the bulk cargo compartment area."},
+{"q":"What type of refrigeration system do the SCUs use?","a":"A vapor-cycle refrigeration system using R134 refrigerant."},
+{"q":"How does the ICS remove heat generated by its own SCU compressors?","a":"It uses PECS cooling fluid to remove heat from the SCU condensers and motor controllers."},
+{"q":"What is the total system capacity of the ICS?","a":"25 gallons (95 liters)."},
+{"q":"What is the difference in PECS heat exchangers on the 787-10?","a":"They are twice as large as those on the 787-8 and -9."},
+{"q":"What are the two main fluid cooling systems on the 787?","a":"The Power Electronics Cooling System (PECS) and the Integrated Cooling System (ICS)."},
+{"q":"What is the specific coolant used in these systems?","a":"BMS 3-42, a mixture of 60% propylene-glycol and 40% water (PGW)."},
+{"q":"What are the three primary components PECS provides cooling for?","a":"Power electronics equipment, ICS supplemental cooling units (SCU), and motor controllers."},
+{"q":"What are the two primary functions of the ICS?","a":"To provide liquid cooling for galley refrigeration and to cool the lower recirculation air."},
+{"q":"Where is the PECS pump package located?","a":"In the main gear wheel wells."},
+{"q":"Where is the ICS pump package located?","a":"In the right wheel well."},
+{"q":"How many pump packages are in the PECS?","a":"Two packages, one for each loop."},
+{"q":"When does the operating PECS pump change?","a":"4 minutes after weight-on-wheels (WOW)."},
+{"q":"What is the purpose of the PECS 3-Way Diverter Valve (TCV)?","a":"It directs coolant either through or around the ram air heat exchanger to control temperature."},
+{"q":"What component calculates the control of the PECS?","a":"The Common Core System (CCS)."},
+{"q":"What causes the PECS TCV to open automatically?","a":"If the two temperature sensors do not agree or the sensed temperature is not within limits."},
+{"q":"How often must the PECS heat exchangers be restored off-airplane?","a":"Every 3 years."},
+{"q":"Where does the ICS loop travel in the airplane?","a":"From the aft part of the airplane to the forward part and back."},
+{"q":"What refrigerant is used in the ICS SCUs?","a":"R134a."},
+{"q":"How does the ICS remove heat from its own SCU condensers?","a":"It uses PECS cooling fluid."},
+{"q":"What is the total fluid capacity of the ICS?","a":"25 gallons (95 liters)."},
+{"q":"What type of reservoir does the ICS pump package use?","a":"A bootstrap reservoir."},
+{"q":"What is the maintenance interval for the ICS message \"PUMP FILTER BYPASS\"?","a":"Every 8,000 flight hours."},
+{"q":"Where is the ICS Galley Pressure Control Valve located?","a":"In the crown area."},
+{"q":"What is the effect of closing the Galley Pressure Control Valve?","a":"It increases system pressure and directs more fluid to the Galley Cooling Units (GCU)."},
+{"q":"What is the purpose of the ICS Pressure Relief Valve?","a":"To protect against overpressure events."},
+{"q":"Where is the ICS Pressure Relief Valve located?","a":"In the crown area."},
+{"q":"What does the Upper Recirculation Diverter Valve control?","a":"The quantity of fluid going to the upper recirculation air heat exchanger."},
+{"q":"Does the Upper Recirculation Diverter Valve have manual control?","a":"Yes, it has a manual handle and external position indicator."},
+{"q":"What tool is used to check ICS coolant concentration?","a":"A refractometer."},
+{"q":"What is the required coolant concentration for the ICS?","a":"60 percent by volume."},
+{"q":"How often is a functional check of the ICS fluid pH level required?","a":"Every 6,000 flight hours."},
+{"q":"What is the de-aeration procedure duration for the ICS?","a":"20 minutes of clean fluid flow through the system."},
+{"q":"What is a major PECS difference on the 787-10?","a":"The heat exchangers are larger."},
+{"q":"What component was added to the 787-10 ICS for hot weather operations?","a":"An Auxiliary Reservoir."},
+{"q":"What is the capacity of the ICS Auxiliary Reservoir?","a":"Approximately 0.9 gallons (3.4 liters)."},
+{"q":"Where is the ICS Auxiliary Reservoir located?","a":"In the right wheel well, above the pump."},
+{"q":"What color indicates a \"Low\" fluid level on the PECS status page?","a":"Amber."},
+{"q":"What are the percentage limits for a \"Full\" PECS reservoir?","a":"0.67 to 1.00."},
+{"q":"Where is the ICS filter located?","a":"At the bottom of the pump package."},
+{"q":"What is the function of the GCU Fan Module?","a":"It pulls warm return air from food carts and sends it through the air-liquid heat exchanger."},
+{"q":"Where are the temperature sensors for the GCU located?","a":"Upstream and downstream of the GCU heat exchanger."},
+{"q":"Approximately how much does an SCU weigh?","a":"150 lbs (68 kg)."},
+{"q":"What power does the SCU Compressor Motor Controller use?","a":"235V AC."},
+{"q":"How many food carts can a small GCU control?","a":"Up to 3 carts."},
+{"q":"What is the approximate weight of the PECS motor controller?","a":"57 lbs (26 kg)."},
+{"q":"What should the pH level of FCAC coolant be?","a":"Between 8 and 10.5."},
+{"q":"What maintenance action is needed if an SCU must be removed?","a":"Use specific GSE/lifting tools due to its weight."},
+{"q":"Are there manual controls for the PECS?","a":"No, there are no manual controls."},
+{"q":"What happens to the secondary SCU compressor if the primary cannot provide enough cooling?","a":"It comes on from standby mode."},
+{"q":"How are PECS temperatures and valve positions viewed?","a":"On Page 2 of the Air Conditioning Maintenance pages."},
+{"q":"What is the purpose of self-sealing disconnects on fluid LRUs?","a":"They allow LRUs to be replaced full of coolant, permitting faster maintenance."},
+{"q":"What is the total weight of the AC pack heat exchanger assembly?","a":"250 pounds (113 kg)."},
+{"q":"Where is the ICS pressure sensor located?","a":"Below the floor of the aft EE bay."},
+{"q":"What percentage range is \"Refill\" (RF) for the PECS?","a":"0.66 to 0.37."}
+];
+
+const equipmentCooling = [
+{"q":"What are the three sub-systems of the equipment cooling system?","a":"Forward EE cooling, Aft EE cooling, and Miscellaneous EE cooling (787-8 only)."},
+{"q":"Where is the primary equipment cooling control application software hosted?","a":"In the Common Core System (CCS) General Purpose Module (GPM) L1."},
+{"q":"What is the normal airflow rate for the Forward EE cooling system?","a":"1600 cfm."},
+{"q":"What are the two \"normal\" modes of operation for Forward EE cooling?","a":"Overboard and Partial Cargo."},
+{"q":"When does the Forward EE cooling system enter Override mode?","a":"In flight when pressurized, if smoke is detected, both supply fans fail, or the manual OVRD switch is selected."},
+{"q":"Where are the Forward EE cooling supply fans located?","a":"In the forward cargo compartment behind the left sidewall lining."},
+{"q":"What is the primary purpose of the Aft EE cooling system?","a":"To remove heat from the aft equipment center and the PECS pump packages."},
+{"q":"How many supply fans are in the Aft EE cooling system, and which is primary?","a":"Two fans; Fan 1 is the primary and Fan 2 is the backup."},
+{"q":"What happened to the Miscellaneous EE cooling system on the 787-9?","a":"It was deleted, and its equipment was relocated to the Forward EE rack."},
+{"q":"What temperature do the cargo heat systems attempt to maintain?","a":"70°F (21°C)."},
+{"q":"Where does the forward cargo heating system get its air source?","a":"From the forward EE cooling system exhaust."},
+{"q":"Which cargo compartment uses an in-line electric heater on the 787-8/9?","a":"The Forward and Bulk cargo compartments."},
+{"q":"What is the function of the piccolo ducts in the cargo compartments?","a":"To move warm air into the area below the cargo compartment floor."},
+{"q":"What triggers the ground crew call horn regarding equipment cooling?","a":"A failure such as low flow or high supply temperature for more than 6 minutes while on the ground."},
+{"q":"What is the difference in Aft Cargo heating on the 787-10?","a":"It incorporates an in-line heater, which is not present on the 787-8/9."},
+{"q":"Name the three equipment cooling sub-systems.","a":"Forward EE cooling, Aft EE cooling, and Miscellaneous EE cooling (787-8 only)."},
+{"q":"Where is the Forward EE cooling supply fan located?","a":"Behind the left sidewall lining of the forward cargo compartment."},
+{"q":"What is the function of the Barrier Filter in the Forward EE system?","a":"To clean air pulled from the left cheek area."},
+{"q":"How often should the barrier filter be replaced?","a":"Every 6,000 flight hours."},
+{"q":"Where is the Forward EE cooling smoke detector located?","a":"In the left cheek area."},
+{"q":"Where is the Forward EE exhaust fan located?","a":"In the mix manifold area."},
+{"q":"What is the normal airflow rate for the Aft EE cooling system?","a":"700 cfm."},
+{"q":"On the ground, what OAT trigger puts the Aft EE system into Overboard mode?","a":"Temperature more than 45°F (7.2°C)."},
+{"q":"On the ground, what OAT trigger puts the Aft EE system into Cargo mode?","a":"Temperature less than 45°F (7.2°C)."},
+{"q":"When does the Forward EE system enter LOCI mode?","a":"During rotorburst conditions (loss of packs and one engine) or if alternate ventilation is on."},
+{"q":"What triggers Override mode in flight?","a":"Smoke detection, dual supply fan failure, high temperature (>131°F), or manual selection."},
+{"q":"What triggers the Supply mode for Forward EE cooling?","a":"Exhaust fan failure, load shed, or a cargo compartment fire pre-alarm."},
+{"q":"Where is the equipment cooling control switch located?","a":"On the P5 overhead panel."},
+{"q":"How long is the smoke detector built-in test (BIT)?","a":"30 seconds."},
+{"q":"What is the power source for the exhaust fan motors?","a":"3-phase, 235V AC."},
+{"q":"What triggers the ground crew call horn for equipment cooling?","a":"Supply temperature > 131°F or low flow for more than 6 minutes."},
+{"q":"What happened to the Miscellaneous EE cooling system on the 787-9?","a":"It was deleted."},
+{"q":"Where was the IFE equipment relocated on the 787-9?","a":"To the Forward EE E2 rack."},
+{"q":"Which three compartments are served by the cargo heat systems?","a":"Forward, Aft, and Bulk cargo compartments."},
+{"q":"What is the air source for the forward cargo heat system?","a":"Forward EE cooling system exhaust."},
+{"q":"What is the purpose of piccolo ducts in the cargo bays?","a":"To distribute warm air below the cargo floor."},
+{"q":"What type of heater is used in the forward cargo compartment?","a":"A 3-phase, dual-element in-line electric heater."},
+{"q":"Under what two conditions is the cargo heater locked out?","a":"When the airplane is on external power or the cargo door is open."},
+{"q":"What is the normal supply duct temperature limit for cargo heating?","a":"160°F (71°C)."},
+{"q":"What is the internal thermostat limit for the heater housing surface?","a":"300°F (149°C)."},
+{"q":"How many zone temperature sensors are in the forward cargo compartment?","a":"Two sensors (the CCS averages their data)."},
+{"q":"What is the air source for the Aft cargo heat?","a":"Aft equipment cooling exhaust."},
+{"q":"When is the Aft Cargo Heat Valve commanded closed?","a":"During smoke conditions or if the overboard exhaust valve is open."},
+{"q":"What version of the 787 incorporates an aft cargo heater?","a":"787-10 (not present on -8/9)."},
+{"q":"Where is the Bulk Cargo Heat Supply Fan located?","a":"Behind the right sidewall of the aft cargo compartment."},
+{"q":"What is the purpose of the FOD screen on the bulk cargo fan?","a":"To protect the fan from foreign object damage."},
+{"q":"What are the two primary functions of the FCAC system?","a":"Temperature control and moisture reduction in the forward cargo area."},
+{"q":"What does the FCAC use to cool the air?","a":"A vapor-cycle Cargo Refrigeration Unit (CRU)."},
+{"q":"Name the four major components of the CRU.","a":"Compressors (2), Condenser, Flash Tank, and Evaporator."},
+{"q":"When does the CRU operate with only one compressor?","a":"When cooling demand is low."},
+{"q":"What power source is used by the CRU compressors?","a":"±270V DC."},
+{"q":"How are the CRU motor controllers cooled?","a":"By FCAC coolant."},
+{"q":"How much does the FCAC pump package weigh?","a":"150 lbs (68 kg)."},
+{"q":"How often is the FCAC pump filter operational test performed?","a":"Every 8,000 flight hours."},
+{"q":"Where is the FCAC top off port located?","a":"In the right-hand pack bay."},
+{"q":"What are the three fluid level maintenance messages for FCAC?","a":"OF (overfill), RF (refill), and LO (low)."},
+{"q":"How does the 787-10 cool the forward cargo without a CRU?","a":"It uses cold air from the air conditioning packs."},
+{"q":"How many valves control the -10 forward cargo air distribution?","a":"Three valves."},
+{"q":"What is the Forward EE mode in flight while pressurized?","a":"Partial cargo."},
+{"q":"What is the Forward EE normal mode on the ground?","a":"Overboard."},
+{"q":"What is the power for the Aft EE supply fans?","a":"3-phase, 235V AC."},
+{"q":"Describe the Aft EE Override Valve.","a":"It is a dual butterfly valve with elements 180 degrees apart."},
+{"q":"How many smoke detectors are in the Aft EE system?","a":"Two detectors."},
+{"q":"Where is the Aft EE barrier filter located?","a":"Behind the left sidewall of the aft cargo compartment."},
+{"q":"In LOCI mode, what is the status of the overboard exhaust valve?","a":"It is open to the overboard position."}
+];
+
+const pressurisation = [
+{"q":"What are the two primary parts of the pressurization control system?","a":"The Cabin Pressure Control System (CPCS) and the Cabin Pressure Relief System."},
+{"q":"How does the CPCS control cabin pressure?","a":"By regulating the quantity of air released through two outflow valves (OFV)."},
+{"q":"What is the normal minimum cabin pressure altitude?","a":"6000 feet."},
+{"q":"Name the two gates found within an Outflow Valve (OFV).","a":"The Ground gate (larger) and the Control gate."},
+{"q":"How many motors does each OFV have?","a":"Three motors: two for automatic control (primary/backup) and one for manual control."},
+{"q":"What component calculates the control for the OFVs in automatic mode?","a":"The Valve Control Units (VCU)."},
+{"q":"Where is the Forward VCU located?","a":"In the Forward EE compartment, E-2 rack."},
+{"q":"What is the purpose of the Remote Sensor Units (RSU)?","a":"To provide backup cabin pressure data to the CCS if the normal data system fails."},
+{"q":"What system provides protection against over-pressurization?","a":"The Positive Pressure Relief Valves (PPRV)."},
+{"q":"How many Negative Pressure Relief Valves (NPRV) are on the aircraft?","a":"Four."},
+{"q":"What causes the NPRVs to open?","a":"They open when the external air pressure is greater than the internal cabin pressure."},
+{"q":"How is manual control of the OFVs achieved?","a":"Via switches on the P5 pressurization panel, which bypass the VCUs entirely."},
+{"q":"What is the maintenance interval for a functional check of the PPRVs?","a":"Every 24,000 flight hours."},
+{"q":"What color is the selected landing altitude on the EICAS display?","a":"Magenta."},
+{"q":"What is the function of the Altitude Limit Function in the VCU?","a":"It automatically closes the OFV gates if the cabin altitude reaches a maximum limit."},
+{"q":"What are the two primary systems for cabin pressurization?","a":"The Cabin Pressure Control System (CPCS) and the Pressure Relief System."},
+{"q":"How does the CPCS control cabin pressure?","a":"By regulating air release through two outflow valves (OFV)."},
+{"q":"What is the minimum normal cabin pressure altitude?","a":"6,000 feet."},
+{"q":"What are the two operating modes for the CPCS?","a":"Automatic and Manual."},
+{"q":"Name the two gates inside an Outflow Valve.","a":"Ground gate (larger) and Control gate."},
+{"q":"How many motors does each OFV have?","a":"Three motors (Primary Auto, Backup Auto, and Manual)."},
+{"q":"Where are the Valve Control Units (VCU) located?","a":"Fwd VCU is in the Forward EE compartment (E2 rack); Aft VCU is on the aft bulkhead."},
+{"q":"What is the purpose of the Remote Sensor Units (RSU)?","a":"They are backup sources for cabin pressure data."},
+{"q":"How many RSUs are installed on the airplane?","a":"Two (one Forward, one Aft)."},
+{"q":"What system provides protection against over-pressurization?","a":"The Positive Pressure Relief Valves (PPRV)."},
+{"q":"What is the functional check interval for the PPRVs?","a":"Every 24,000 flight hours."},
+{"q":"What system protects against under-pressurization (negative pressure)?","a":"The Negative Pressure Relief Valves (NPRV)."},
+{"q":"How many NPRVs are in the fuselage?","a":"Four valves."},
+{"q":"What is the pressure limit for the NPRVs?","a":"Negative 0.25 psid."},
+{"q":"Does Manual mode data pass through the VCU?","a":"No, it goes directly to the manual motor, bypassing the VCU."},
+{"q":"What color is the selected landing altitude on the EICAS?","a":"Magenta."},
+{"q":"What position must a failed OFV be locked in for dispatch?","a":"17 percent open."},
+{"q":"Are OFVs interchangeable between the 787-8 and 787-9?","a":"No."},
+{"q":"What two extra positions do 787-9 OFVs have?","a":"1 o'clock and 10 o'clock."},
+{"q":"Where does the manual motor get its power?","a":"From 28V DC panels (P300/P400)."},
+{"q":"Where is the manual pressure control switch located?","a":"On the P5 overhead panel."},
+{"q":"What function automatically closes OFV gates at a maximum limit?","a":"The Altitude Limit Function."},
+{"q":"Where is \"Takeoff & LDG\" status displayed?","a":"On the EICAS."},
+{"q":"What color is the actual cabin altitude text on EICAS?","a":"White."},
+{"q":"What does a semi-circle gauge on EICAS represent?","a":"Outflow valve position."},
+{"q":"What is the VCU power source?","a":"28V DC RPDU."},
+{"q":"How does an RSU communicate with the CCS?","a":"Through a Remote Data Concentrator (RDC)."},
+{"q":"Can the airplane dispatch with both PPRVs defective?","a":"Only if the flight is unpressurized."},
+{"q":"Can the airplane dispatch with all NPRVs defective?","a":"Yes, if the flight is unpressurized."},
+{"q":"What is the VCU-to-VCU communication link called?","a":"The VCU to VCU bus."},
+{"q":"How often must a manual control operational check be done?","a":"Every 12,000 flight hours."},
+{"q":"What labels are used for OFV position gauge limits?","a":"OP (Open) and CL (Closed)."},
+{"q":"What sensor does the VCU use if local sensors fail?","a":"The Remote Sensor Unit (RSU)."},
+{"q":"Why do OFV gates close automatically during mechanical failure?","a":"Because of aerodynamic closing torque."},
+{"q":"What is the ATA code for Pressurization?","a":"21-30-01."},
+{"q":"What is the ATA code for Negative Pressure Relief?","a":"21-32-02."},
+{"q":"What is the max Delta P displayed during ground tests?","a":"0.11 PSI."},
+{"q":"How many motors total are used for pressurization across both OFVs?","a":"Six (3 per valve)."},
+{"q":"Which OFV gate is usually only used on the ground?","a":"The Ground gate."},
+{"q":"Where does the manual motor signal originate?","a":"The P5 overhead panel switches."},
+{"q":"What component provides the \"Manual Open/Close Command\"?","a":"The P5 Pressurization Panel."},
+{"q":"What is the status of the FWD OFV if EICAS shows a white louver?","a":"Operating in Auto mode."},
+{"q":"What is the status if the OFV gauge shows an \"M\"?","a":"The valve is in Manual mode."},
+{"q":"Is the RSU count redundant?","a":"Yes, there are two for redundancy."},
+{"q":"What is the PPRV tester part number?","a":"SPL-6692."},
+{"q":"Where is the NPRV located?","a":"In the airplane fuselage."},
+{"q":"Does the VCU require data from the FMS?","a":"Yes, it uses flight management data from the CCS."},
+{"q":"What color is the \"Cabin Altitude\" label on the EICAS?","a":"Cyan/Blue."},
+{"q":"What does the \"Rate\" display indicate?","a":"The cabin altitude rate of change."},
+{"q":"Which motor is used to bypass VCUs entirely?","a":"The Manual control motor."}
+];
+
+// App state
+let currentSubject = 'Fluid Cooling';
+let currentDeck = fluidCooling;
+let idx = 0;
+
+const qText = document.getElementById('q-text');
+const aText = document.getElementById('a-text');
+const catLabel = document.getElementById('cat-label');
+const currentSystem = document.getElementById('current-system');
+const cardCount = document.getElementById('card-count');
+const progressFill = document.getElementById('progress-fill');
+const mainCard = document.getElementById('main-card');
+const subjectSelect = document.getElementById('subject-select');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+function updateUI() {
+    const item = currentDeck[idx];
+    // ensure face-down
+    mainCard.classList.remove('flipped');
+
+    // smooth swap
+n    setTimeout(() => {
+        qText.innerText = item.q;
+        aText.innerText = item.a;
+        catLabel.innerText = item.s || currentSubject;
+        currentSystem.innerText = `Subject: ${currentSubject}`;
+        cardCount.innerText = `${idx + 1} / ${currentDeck.length}`;
+        progressFill.style.width = `${((idx + 1) / currentDeck.length) * 100}%`;
+    }, 120);
+}
+
+function changeCard(step) {
+    idx += step;
+    if (idx < 0) idx = currentDeck.length - 1;
+    if (idx >= currentDeck.length) idx = 0;
+    updateUI();
+}
+
+// keyboard navigation and spacebar flip (prevent default scrolling)
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { changeCard(1); }
+    else if (e.key === 'ArrowLeft') { changeCard(-1); }
+    else if (e.code === 'Space' || e.key === ' ') {
+        e.preventDefault();
+        mainCard.classList.toggle('flipped');
+    }
+});
+
+// Subject select handler
+subjectSelect.addEventListener('change', (e) => {
+    const val = e.target.value;
+    if (val === 'fluid') {
+        currentSubject = 'Fluid Cooling';
+        currentDeck = fluidCooling;
+    } else if (val === 'equipment') {
+        currentSubject = 'Equipment Cooling';
+        currentDeck = equipmentCooling;
+    } else if (val === 'pressurisation') {
+        currentSubject = 'Pressurisation';
+        currentDeck = pressurisation;
+    }
+    idx = 0;
+    updateUI();
+});
+
+// Prev/Next buttons
+prevBtn.addEventListener('click', () => changeCard(-1));
+nextBtn.addEventListener('click', () => changeCard(1));
+
+// initialize
+(function init() {
+    // default select to fluid (already set in markup), set state accordingly
+    subjectSelect.value = 'fluid';
+    currentSubject = 'Fluid Cooling';
+    currentDeck = fluidCooling;
+    idx = 0;
+    updateUI();
+})();
+</script>
+</body>
+</html>
