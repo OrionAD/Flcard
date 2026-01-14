@@ -1,2 +1,4 @@
 # Flcard
-Flash card q&amp;a
+Flash card q&a
+
+Built with HTML, CSS, and JavaScript
