@@ -1,5 +1,5 @@
 {
-  "name": "skyprep",
+  "name": "flcard",
   "compatibility_date": "2026-01-14",
-  "main": "index.js"
+  "main": "index.html"
 }
