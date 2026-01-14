@@ -1,4 +1,2 @@
-{
-  "name": "flcard",
-  "compatibility_date": "2026-01-14"
-}
+// wrangler.jsonc
+"name": "skyprep",
