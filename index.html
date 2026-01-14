@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Fluid Cooling Flashcard Quiz</title>
+    <title>ATA 21 Air Conditioning Flashcard Quiz</title>
     <style>
         :root {
             --primary: #0056b3;
@@ -12,6 +13,7 @@
             --card-white: #ffffff;
             --text-main: #1c1e21;
         }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
@@ -22,15 +24,23 @@
             min-height: 100vh;
             padding: 20px;
         }
+
         .app-container {
             width: 100%;
             max-width: 700px;
         }
+
         header {
             text-align: center;
             margin-bottom: 20px;
         }
-        h1 { color: var(--primary); margin: 0; font-size: 1.5rem; }
+
+        h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
         .progress-bar {
             height: 6px;
             background: #ddd;
@@ -38,12 +48,14 @@
             margin: 15px 0;
             overflow: hidden;
         }
+
         #progress-fill {
             height: 100%;
             background: var(--primary);
             width: 0%;
             transition: width 0.25s ease;
         }
+
         .stats {
             display: flex;
             justify-content: space-between;
@@ -51,6 +63,7 @@
             color: var(--secondary);
             margin-bottom: 10px;
         }
+
         /* Flashcard */
         .flashcard {
             perspective: 1000px;
@@ -58,6 +71,7 @@
             cursor: pointer;
             margin-bottom: 20px;
         }
+
         .card-inner {
             position: relative;
             width: 100%;
@@ -65,13 +79,16 @@
             text-align: center;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
             border-radius: 12px;
         }
+
         .flashcard.flipped .card-inner {
             transform: rotateY(180deg);
         }
-        .card-front, .card-back {
+
+        .card-front,
+        .card-back {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -85,6 +102,7 @@
             border-radius: 12px;
             background: var(--card-white);
         }
+
         .card-back {
             transform: rotateY(180deg);
             background-color: #f8f9ff;
@@ -93,11 +111,13 @@
             font-size: 1.05rem;
             line-height: 1.45;
         }
+
         .card-front {
             font-size: 1.1rem;
             font-weight: 600;
             color: var(--primary);
         }
+
         .category-pill {
             position: absolute;
             top: 16px;
@@ -110,6 +130,7 @@
             letter-spacing: 0.8px;
             color: #444;
         }
+
         /* Controls */
         .controls {
             display: grid;
@@ -117,13 +138,15 @@
             gap: 12px;
             margin-top: 8px;
         }
+
         .controls-top {
-            display:flex;
-            gap:12px;
-            justify-content:center;
-            margin-bottom:8px;
-            align-items:center;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 8px;
+            align-items: center;
         }
+
         select {
             padding: 10px 12px;
             border-radius: 8px;
@@ -131,6 +154,7 @@
             font-size: 1rem;
             background: white;
         }
+
         button {
             padding: 12px;
             border: none;
@@ -140,349 +164,3202 @@
             font-size: 1rem;
             transition: all 0.15s;
         }
-        .btn-prev { background: #fff; color: var(--secondary); border: 1px solid #ddd; }
-        .btn-next { background: var(--primary); color: white; }
-        button:active { transform: scale(0.98); }
+
+        .btn-prev {
+            background: #fff;
+            color: var(--secondary);
+            border: 1px solid #ddd;
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
         .hint {
             text-align: center;
             color: var(--secondary);
             font-size: 0.86rem;
             margin-top: 14px;
         }
-        @media (max-width:600px){
-            .flashcard { height: 360px; }
+
+        @media (max-width:600px) {
+            .flashcard {
+                height: 360px;
+            }
         }
     </style>
 </head>
+
 <body>
-<div class="app-container">
-    <header>
-        <h1>Fluid Cooling Flashcard Quiz</h1>
-        <div class="progress-bar"><div id="progress-fill"></div></div>
-        <div class="stats">
-            <span id="current-system">Subject: Loading</span>
-            <span id="card-count">0 / 0</span>
-        </div>
-    </header>
-
-    <div class="flashcard" id="main-card" onclick="this.classList.toggle('flipped')">
-        <div class="card-inner">
-            <div class="card-front">
-                <span class="category-pill" id="cat-label">Subject</span>
-                <div id="q-text">Loading Question...</div>
+    <div class="app-container">
+        <header>
+            <h1>ATA 21 Air Conditioning Flashcard Quiz</h1>
+            <div class="progress-bar">
+                <div id="progress-fill"></div>
             </div>
-            <div class="card-back">
-                <div id="a-text">Loading Answer...</div>
+            <div class="stats">
+                <span id="current-system">Subject: Loading</span>
+                <span id="card-count">0 / 0</span>
+            </div>
+        </header>
+
+        <div class="flashcard" id="main-card" onclick="this.classList.toggle('flipped')">
+            <div class="card-inner">
+                <div class="card-front">
+                    <span class="category-pill" id="cat-label">Subject</span>
+                    <div id="q-text">Loading Question...</div>
+                </div>
+                <div class="card-back">
+                    <div id="a-text">Loading Answer...</div>
+                </div>
             </div>
         </div>
+
+        <div class="controls-top">
+            <label for="subject-select" style="color:var(--secondary);font-weight:600;margin-right:6px;">Select
+                Subject:</label>
+            <select id="subject-select">
+                <option value="cac">1. Cabin Air Compressor (CAC) System (30)</option>
+                <option value="pcu">2. Pack Control Unit (PCU) (30)</option>
+                <option value="deflector">3. CAC Inlet Deflector Door System (30)</option>
+                <option value="ahv">4. CAC Add Heat Valve (AHV) (30)</option>
+                <option value="ozone">5. Ozone Converter (30)</option>
+                <option value="sensors">6. CAC Control Sensors (Pressure/Flow/Temp) (30)</option>
+                <option value="packs">7. Cooling Packs General (30)</option>
+                <option value="ram">8. Ram Air System (Doors & Header) (30)</option>
+                <option value="fan">9. Ram Air Fan & Controller (30)</option>
+                <option value="heatex">10. Heat Exchangers (Primary & Secondary) (30)</option>
+                <option value="acm">11. Air Cycle Machine (ACM) (30)</option>
+                <option value="condenser">12. Condenser & Water Extraction (30)</option>
+                <option value="valves">13. Pack Control Valves (LLV, ECV, ABPV) (30)</option>
+                <option value="overheat">14. Overheat Protection System (WAP) (30)</option>
+                <option value="recirc">15. Lower Recirculation System (30)</option>
+                <option value="mixer">16. Compact Mixer (30)</option>
+                <option value="distribution">17. Air Distribution (Mix Manifold & Risers) (30)</option>
+                <option value="boost">18. Flight Deck Boost Fan System (30)</option>
+                <option value="trim">19. Trim Air System (30)</option>
+                <option value="humidification">20. Humidification System (30)</option>
+                <option value="heating">21. Supplemental Heating (Foot/Shoulder/Floor) (30)</option>
+                <option value="dryers">22. Zonal Dryers (30)</option>
+                <option value="pecs">23. Power Electronics Cooling System (PECS) (30)</option>
+                <option value="cpcs">24. Cabin Pressure Control System (CPCS) (30)</option>
+            </select>
+        </div>
+
+        <div class="controls">
+            <button class="btn-prev" id="prev-btn">Previous</button>
+            <button class="btn-next" id="next-btn">Next Card</button>
+        </div>
+
+        <p class="hint">Tap the card to flip (or press Space). Use ← → to navigate.</p>
     </div>
 
-    <div class="controls-top">
-        <label for="subject-select" style="color:var(--secondary);font-weight:600;margin-right:6px;">Select Subject:</label>
-        <select id="subject-select">
-            <option value="fluid">Fluid Cooling (50)</option>
-            <option value="equipment">Equipment Cooling (50)</option>
-            <option value="pressurisation">Pressurisation (50)</option>
-        </select>
-    </div>
+    <script>
+        /*
+          Three decks (50 questions each) provided by the user.
+          Each item: { q: "...", a: "..." }
+        */
 
-    <div class="controls">
-        <button class="btn-prev" id="prev-btn">Previous</button>
-        <button class="btn-next" id="next-btn">Next Card</button>
-    </div>
-
-    <p class="hint">Tap the card to flip (or press Space). Use ← → to navigate.</p>
-</div>
-
-<script>
-/*
-  Three decks (50 questions each) provided by the user.
-  Each item: { q: "...", a: "..." }
-*/
-
-const fluidCooling = [
-{"q":"What are the two primary fluid cooling systems on the 787?","a":"The Power Electronics Cooling System (PECS) and the Integrated Cooling System (ICS)."},
-{"q":"What is the specific composition of the PECS liquid coolant?","a":"A mixture of 60 percent propylene-glycol and 40 percent de-ionized water (PGW)."},
-{"q":"Where are the PECS liquid cooling pump packages located?","a":"In the left and right main gear wheel wells."},
-{"q":"What is the normal operating pressure for the PECS?","a":"200 psig."},
-{"q":"Which equipment does the PECS left loop specifically cool?","a":"Supplemental cooling units (SCU) 2 and 4 condensers, SCU motor controllers 2 and 4, and equipment on the P700/E5 rack."},
-{"q":"What are the two primary functions of the Integrated Cooling System (ICS)?","a":"To provide liquid cooling for galley refrigeration and to decrease the temperature of the lower recirculation air."},
-{"q":"How many pumps are in each PECS pump package, and how do they operate?","a":"There are two pumps; one operates as primary while the other is back-up, changing roles after each flight."},
-{"q":"What is the approximate life of the PECS cooling fluid?","a":"Approximately 12,000 hours."},
-{"q":"What color is the DowFrost coolant used in these systems?","a":"Orange."},
-{"q":"What is the purpose of the PECS 3-way diverter valve (TCV)?","a":"It controls the temperature of the coolant by directing it either through or around the ram air heat exchanger."},
-{"q":"Where are the ICS Supplemental Cooling Units (SCUs) located?","a":"In the bulk cargo compartment area."},
-{"q":"What type of refrigeration system do the SCUs use?","a":"A vapor-cycle refrigeration system using R134 refrigerant."},
-{"q":"How does the ICS remove heat generated by its own SCU compressors?","a":"It uses PECS cooling fluid to remove heat from the SCU condensers and motor controllers."},
-{"q":"What is the total system capacity of the ICS?","a":"25 gallons (95 liters)."},
-{"q":"What is the difference in PECS heat exchangers on the 787-10?","a":"They are twice as large as those on the 787-8 and -9."},
-{"q":"What are the two main fluid cooling systems on the 787?","a":"The Power Electronics Cooling System (PECS) and the Integrated Cooling System (ICS)."},
-{"q":"What is the specific coolant used in these systems?","a":"BMS 3-42, a mixture of 60% propylene-glycol and 40% water (PGW)."},
-{"q":"What are the three primary components PECS provides cooling for?","a":"Power electronics equipment, ICS supplemental cooling units (SCU), and motor controllers."},
-{"q":"What are the two primary functions of the ICS?","a":"To provide liquid cooling for galley refrigeration and to cool the lower recirculation air."},
-{"q":"Where is the PECS pump package located?","a":"In the main gear wheel wells."},
-{"q":"Where is the ICS pump package located?","a":"In the right wheel well."},
-{"q":"How many pump packages are in the PECS?","a":"Two packages, one for each loop."},
-{"q":"When does the operating PECS pump change?","a":"4 minutes after weight-on-wheels (WOW)."},
-{"q":"What is the purpose of the PECS 3-Way Diverter Valve (TCV)?","a":"It directs coolant either through or around the ram air heat exchanger to control temperature."},
-{"q":"What component calculates the control of the PECS?","a":"The Common Core System (CCS)."},
-{"q":"What causes the PECS TCV to open automatically?","a":"If the two temperature sensors do not agree or the sensed temperature is not within limits."},
-{"q":"How often must the PECS heat exchangers be restored off-airplane?","a":"Every 3 years."},
-{"q":"Where does the ICS loop travel in the airplane?","a":"From the aft part of the airplane to the forward part and back."},
-{"q":"What refrigerant is used in the ICS SCUs?","a":"R134a."},
-{"q":"How does the ICS remove heat from its own SCU condensers?","a":"It uses PECS cooling fluid."},
-{"q":"What is the total fluid capacity of the ICS?","a":"25 gallons (95 liters)."},
-{"q":"What type of reservoir does the ICS pump package use?","a":"A bootstrap reservoir."},
-{"q":"What is the maintenance interval for the ICS message \"PUMP FILTER BYPASS\"?","a":"Every 8,000 flight hours."},
-{"q":"Where is the ICS Galley Pressure Control Valve located?","a":"In the crown area."},
-{"q":"What is the effect of closing the Galley Pressure Control Valve?","a":"It increases system pressure and directs more fluid to the Galley Cooling Units (GCU)."},
-{"q":"What is the purpose of the ICS Pressure Relief Valve?","a":"To protect against overpressure events."},
-{"q":"Where is the ICS Pressure Relief Valve located?","a":"In the crown area."},
-{"q":"What does the Upper Recirculation Diverter Valve control?","a":"The quantity of fluid going to the upper recirculation air heat exchanger."},
-{"q":"Does the Upper Recirculation Diverter Valve have manual control?","a":"Yes, it has a manual handle and external position indicator."},
-{"q":"What tool is used to check ICS coolant concentration?","a":"A refractometer."},
-{"q":"What is the required coolant concentration for the ICS?","a":"60 percent by volume."},
-{"q":"How often is a functional check of the ICS fluid pH level required?","a":"Every 6,000 flight hours."},
-{"q":"What is the de-aeration procedure duration for the ICS?","a":"20 minutes of clean fluid flow through the system."},
-{"q":"What is a major PECS difference on the 787-10?","a":"The heat exchangers are larger."},
-{"q":"What component was added to the 787-10 ICS for hot weather operations?","a":"An Auxiliary Reservoir."},
-{"q":"What is the capacity of the ICS Auxiliary Reservoir?","a":"Approximately 0.9 gallons (3.4 liters)."},
-{"q":"Where is the ICS Auxiliary Reservoir located?","a":"In the right wheel well, above the pump."},
-{"q":"What color indicates a \"Low\" fluid level on the PECS status page?","a":"Amber."},
-{"q":"What are the percentage limits for a \"Full\" PECS reservoir?","a":"0.67 to 1.00."},
-{"q":"Where is the ICS filter located?","a":"At the bottom of the pump package."},
-{"q":"What is the function of the GCU Fan Module?","a":"It pulls warm return air from food carts and sends it through the air-liquid heat exchanger."},
-{"q":"Where are the temperature sensors for the GCU located?","a":"Upstream and downstream of the GCU heat exchanger."},
-{"q":"Approximately how much does an SCU weigh?","a":"150 lbs (68 kg)."},
-{"q":"What power does the SCU Compressor Motor Controller use?","a":"235V AC."},
-{"q":"How many food carts can a small GCU control?","a":"Up to 3 carts."},
-{"q":"What is the approximate weight of the PECS motor controller?","a":"57 lbs (26 kg)."},
-{"q":"What should the pH level of FCAC coolant be?","a":"Between 8 and 10.5."},
-{"q":"What maintenance action is needed if an SCU must be removed?","a":"Use specific GSE/lifting tools due to its weight."},
-{"q":"Are there manual controls for the PECS?","a":"No, there are no manual controls."},
-{"q":"What happens to the secondary SCU compressor if the primary cannot provide enough cooling?","a":"It comes on from standby mode."},
-{"q":"How are PECS temperatures and valve positions viewed?","a":"On Page 2 of the Air Conditioning Maintenance pages."},
-{"q":"What is the purpose of self-sealing disconnects on fluid LRUs?","a":"They allow LRUs to be replaced full of coolant, permitting faster maintenance."},
-{"q":"What is the total weight of the AC pack heat exchanger assembly?","a":"250 pounds (113 kg)."},
-{"q":"Where is the ICS pressure sensor located?","a":"Below the floor of the aft EE bay."},
-{"q":"What percentage range is \"Refill\" (RF) for the PECS?","a":"0.66 to 0.37."}
-];
-
-const equipmentCooling = [
-{"q":"What are the three sub-systems of the equipment cooling system?","a":"Forward EE cooling, Aft EE cooling, and Miscellaneous EE cooling (787-8 only)."},
-{"q":"Where is the primary equipment cooling control application software hosted?","a":"In the Common Core System (CCS) General Purpose Module (GPM) L1."},
-{"q":"What is the normal airflow rate for the Forward EE cooling system?","a":"1600 cfm."},
-{"q":"What are the two \"normal\" modes of operation for Forward EE cooling?","a":"Overboard and Partial Cargo."},
-{"q":"When does the Forward EE cooling system enter Override mode?","a":"In flight when pressurized, if smoke is detected, both supply fans fail, or the manual OVRD switch is selected."},
-{"q":"Where are the Forward EE cooling supply fans located?","a":"In the forward cargo compartment behind the left sidewall lining."},
-{"q":"What is the primary purpose of the Aft EE cooling system?","a":"To remove heat from the aft equipment center and the PECS pump packages."},
-{"q":"How many supply fans are in the Aft EE cooling system, and which is primary?","a":"Two fans; Fan 1 is the primary and Fan 2 is the backup."},
-{"q":"What happened to the Miscellaneous EE cooling system on the 787-9?","a":"It was deleted, and its equipment was relocated to the Forward EE rack."},
-{"q":"What temperature do the cargo heat systems attempt to maintain?","a":"70°F (21°C)."},
-{"q":"Where does the forward cargo heating system get its air source?","a":"From the forward EE cooling system exhaust."},
-{"q":"Which cargo compartment uses an in-line electric heater on the 787-8/9?","a":"The Forward and Bulk cargo compartments."},
-{"q":"What is the function of the piccolo ducts in the cargo compartments?","a":"To move warm air into the area below the cargo compartment floor."},
-{"q":"What triggers the ground crew call horn regarding equipment cooling?","a":"A failure such as low flow or high supply temperature for more than 6 minutes while on the ground."},
-{"q":"What is the difference in Aft Cargo heating on the 787-10?","a":"It incorporates an in-line heater, which is not present on the 787-8/9."},
-{"q":"Name the three equipment cooling sub-systems.","a":"Forward EE cooling, Aft EE cooling, and Miscellaneous EE cooling (787-8 only)."},
-{"q":"Where is the Forward EE cooling supply fan located?","a":"Behind the left sidewall lining of the forward cargo compartment."},
-{"q":"What is the function of the Barrier Filter in the Forward EE system?","a":"To clean air pulled from the left cheek area."},
-{"q":"How often should the barrier filter be replaced?","a":"Every 6,000 flight hours."},
-{"q":"Where is the Forward EE cooling smoke detector located?","a":"In the left cheek area."},
-{"q":"Where is the Forward EE exhaust fan located?","a":"In the mix manifold area."},
-{"q":"What is the normal airflow rate for the Aft EE cooling system?","a":"700 cfm."},
-{"q":"On the ground, what OAT trigger puts the Aft EE system into Overboard mode?","a":"Temperature more than 45°F (7.2°C)."},
-{"q":"On the ground, what OAT trigger puts the Aft EE system into Cargo mode?","a":"Temperature less than 45°F (7.2°C)."},
-{"q":"When does the Forward EE system enter LOCI mode?","a":"During rotorburst conditions (loss of packs and one engine) or if alternate ventilation is on."},
-{"q":"What triggers Override mode in flight?","a":"Smoke detection, dual supply fan failure, high temperature (>131°F), or manual selection."},
-{"q":"What triggers the Supply mode for Forward EE cooling?","a":"Exhaust fan failure, load shed, or a cargo compartment fire pre-alarm."},
-{"q":"Where is the equipment cooling control switch located?","a":"On the P5 overhead panel."},
-{"q":"How long is the smoke detector built-in test (BIT)?","a":"30 seconds."},
-{"q":"What is the power source for the exhaust fan motors?","a":"3-phase, 235V AC."},
-{"q":"What triggers the ground crew call horn for equipment cooling?","a":"Supply temperature > 131°F or low flow for more than 6 minutes."},
-{"q":"What happened to the Miscellaneous EE cooling system on the 787-9?","a":"It was deleted."},
-{"q":"Where was the IFE equipment relocated on the 787-9?","a":"To the Forward EE E2 rack."},
-{"q":"Which three compartments are served by the cargo heat systems?","a":"Forward, Aft, and Bulk cargo compartments."},
-{"q":"What is the air source for the forward cargo heat system?","a":"Forward EE cooling system exhaust."},
-{"q":"What is the purpose of piccolo ducts in the cargo bays?","a":"To distribute warm air below the cargo floor."},
-{"q":"What type of heater is used in the forward cargo compartment?","a":"A 3-phase, dual-element in-line electric heater."},
-{"q":"Under what two conditions is the cargo heater locked out?","a":"When the airplane is on external power or the cargo door is open."},
-{"q":"What is the normal supply duct temperature limit for cargo heating?","a":"160°F (71°C)."},
-{"q":"What is the internal thermostat limit for the heater housing surface?","a":"300°F (149°C)."},
-{"q":"How many zone temperature sensors are in the forward cargo compartment?","a":"Two sensors (the CCS averages their data)."},
-{"q":"What is the air source for the Aft cargo heat?","a":"Aft equipment cooling exhaust."},
-{"q":"When is the Aft Cargo Heat Valve commanded closed?","a":"During smoke conditions or if the overboard exhaust valve is open."},
-{"q":"What version of the 787 incorporates an aft cargo heater?","a":"787-10 (not present on -8/9)."},
-{"q":"Where is the Bulk Cargo Heat Supply Fan located?","a":"Behind the right sidewall of the aft cargo compartment."},
-{"q":"What is the purpose of the FOD screen on the bulk cargo fan?","a":"To protect the fan from foreign object damage."},
-{"q":"What are the two primary functions of the FCAC system?","a":"Temperature control and moisture reduction in the forward cargo area."},
-{"q":"What does the FCAC use to cool the air?","a":"A vapor-cycle Cargo Refrigeration Unit (CRU)."},
-{"q":"Name the four major components of the CRU.","a":"Compressors (2), Condenser, Flash Tank, and Evaporator."},
-{"q":"When does the CRU operate with only one compressor?","a":"When cooling demand is low."},
-{"q":"What power source is used by the CRU compressors?","a":"±270V DC."},
-{"q":"How are the CRU motor controllers cooled?","a":"By FCAC coolant."},
-{"q":"How much does the FCAC pump package weigh?","a":"150 lbs (68 kg)."},
-{"q":"How often is the FCAC pump filter operational test performed?","a":"Every 8,000 flight hours."},
-{"q":"Where is the FCAC top off port located?","a":"In the right-hand pack bay."},
-{"q":"What are the three fluid level maintenance messages for FCAC?","a":"OF (overfill), RF (refill), and LO (low)."},
-{"q":"How does the 787-10 cool the forward cargo without a CRU?","a":"It uses cold air from the air conditioning packs."},
-{"q":"How many valves control the -10 forward cargo air distribution?","a":"Three valves."},
-{"q":"What is the Forward EE mode in flight while pressurized?","a":"Partial cargo."},
-{"q":"What is the Forward EE normal mode on the ground?","a":"Overboard."},
-{"q":"What is the power for the Aft EE supply fans?","a":"3-phase, 235V AC."},
-{"q":"Describe the Aft EE Override Valve.","a":"It is a dual butterfly valve with elements 180 degrees apart."},
-{"q":"How many smoke detectors are in the Aft EE system?","a":"Two detectors."},
-{"q":"Where is the Aft EE barrier filter located?","a":"Behind the left sidewall of the aft cargo compartment."},
-{"q":"In LOCI mode, what is the status of the overboard exhaust valve?","a":"It is open to the overboard position."}
-];
-
-const pressurisation = [
-{"q":"What are the two primary parts of the pressurization control system?","a":"The Cabin Pressure Control System (CPCS) and the Cabin Pressure Relief System."},
-{"q":"How does the CPCS control cabin pressure?","a":"By regulating the quantity of air released through two outflow valves (OFV)."},
-{"q":"What is the normal minimum cabin pressure altitude?","a":"6000 feet."},
-{"q":"Name the two gates found within an Outflow Valve (OFV).","a":"The Ground gate (larger) and the Control gate."},
-{"q":"How many motors does each OFV have?","a":"Three motors: two for automatic control (primary/backup) and one for manual control."},
-{"q":"What component calculates the control for the OFVs in automatic mode?","a":"The Valve Control Units (VCU)."},
-{"q":"Where is the Forward VCU located?","a":"In the Forward EE compartment, E-2 rack."},
-{"q":"What is the purpose of the Remote Sensor Units (RSU)?","a":"To provide backup cabin pressure data to the CCS if the normal data system fails."},
-{"q":"What system provides protection against over-pressurization?","a":"The Positive Pressure Relief Valves (PPRV)."},
-{"q":"How many Negative Pressure Relief Valves (NPRV) are on the aircraft?","a":"Four."},
-{"q":"What causes the NPRVs to open?","a":"They open when the external air pressure is greater than the internal cabin pressure."},
-{"q":"How is manual control of the OFVs achieved?","a":"Via switches on the P5 pressurization panel, which bypass the VCUs entirely."},
-{"q":"What is the maintenance interval for a functional check of the PPRVs?","a":"Every 24,000 flight hours."},
-{"q":"What color is the selected landing altitude on the EICAS display?","a":"Magenta."},
-{"q":"What is the function of the Altitude Limit Function in the VCU?","a":"It automatically closes the OFV gates if the cabin altitude reaches a maximum limit."},
-{"q":"What are the two primary systems for cabin pressurization?","a":"The Cabin Pressure Control System (CPCS) and the Pressure Relief System."},
-{"q":"How does the CPCS control cabin pressure?","a":"By regulating air release through two outflow valves (OFV)."},
-{"q":"What is the minimum normal cabin pressure altitude?","a":"6,000 feet."},
-{"q":"What are the two operating modes for the CPCS?","a":"Automatic and Manual."},
-{"q":"Name the two gates inside an Outflow Valve.","a":"Ground gate (larger) and Control gate."},
-{"q":"How many motors does each OFV have?","a":"Three motors (Primary Auto, Backup Auto, and Manual)."},
-{"q":"Where are the Valve Control Units (VCU) located?","a":"Fwd VCU is in the Forward EE compartment (E2 rack); Aft VCU is on the aft bulkhead."},
-{"q":"What is the purpose of the Remote Sensor Units (RSU)?","a":"They are backup sources for cabin pressure data."},
-{"q":"How many RSUs are installed on the airplane?","a":"Two (one Forward, one Aft)."},
-{"q":"What system provides protection against over-pressurization?","a":"The Positive Pressure Relief Valves (PPRV)."},
-{"q":"What is the functional check interval for the PPRVs?","a":"Every 24,000 flight hours."},
-{"q":"What system protects against under-pressurization (negative pressure)?","a":"The Negative Pressure Relief Valves (NPRV)."},
-{"q":"How many NPRVs are in the fuselage?","a":"Four valves."},
-{"q":"What is the pressure limit for the NPRVs?","a":"Negative 0.25 psid."},
-{"q":"Does Manual mode data pass through the VCU?","a":"No, it goes directly to the manual motor, bypassing the VCU."},
-{"q":"What color is the selected landing altitude on the EICAS?","a":"Magenta."},
-{"q":"What position must a failed OFV be locked in for dispatch?","a":"17 percent open."},
-{"q":"Are OFVs interchangeable between the 787-8 and 787-9?","a":"No."},
-{"q":"What two extra positions do 787-9 OFVs have?","a":"1 o'clock and 10 o'clock."},
-{"q":"Where does the manual motor get its power?","a":"From 28V DC panels (P300/P400)."},
-{"q":"Where is the manual pressure control switch located?","a":"On the P5 overhead panel."},
-{"q":"What function automatically closes OFV gates at a maximum limit?","a":"The Altitude Limit Function."},
-{"q":"Where is \"Takeoff & LDG\" status displayed?","a":"On the EICAS."},
-{"q":"What color is the actual cabin altitude text on EICAS?","a":"White."},
-{"q":"What does a semi-circle gauge on EICAS represent?","a":"Outflow valve position."},
-{"q":"What is the VCU power source?","a":"28V DC RPDU."},
-{"q":"How does an RSU communicate with the CCS?","a":"Through a Remote Data Concentrator (RDC)."},
-{"q":"Can the airplane dispatch with both PPRVs defective?","a":"Only if the flight is unpressurized."},
-{"q":"Can the airplane dispatch with all NPRVs defective?","a":"Yes, if the flight is unpressurized."},
-{"q":"What is the VCU-to-VCU communication link called?","a":"The VCU to VCU bus."},
-{"q":"How often must a manual control operational check be done?","a":"Every 12,000 flight hours."},
-{"q":"What labels are used for OFV position gauge limits?","a":"OP (Open) and CL (Closed)."},
-{"q":"What sensor does the VCU use if local sensors fail?","a":"The Remote Sensor Unit (RSU)."},
-{"q":"Why do OFV gates close automatically during mechanical failure?","a":"Because of aerodynamic closing torque."},
-{"q":"What is the ATA code for Pressurization?","a":"21-30-01."},
-{"q":"What is the ATA code for Negative Pressure Relief?","a":"21-32-02."},
-{"q":"What is the max Delta P displayed during ground tests?","a":"0.11 PSI."},
-{"q":"How many motors total are used for pressurization across both OFVs?","a":"Six (3 per valve)."},
-{"q":"Which OFV gate is usually only used on the ground?","a":"The Ground gate."},
-{"q":"Where does the manual motor signal originate?","a":"The P5 overhead panel switches."},
-{"q":"What component provides the \"Manual Open/Close Command\"?","a":"The P5 Pressurization Panel."},
-{"q":"What is the status of the FWD OFV if EICAS shows a white louver?","a":"Operating in Auto mode."},
-{"q":"What is the status if the OFV gauge shows an \"M\"?","a":"The valve is in Manual mode."},
-{"q":"Is the RSU count redundant?","a":"Yes, there are two for redundancy."},
-{"q":"What is the PPRV tester part number?","a":"SPL-6692."},
-{"q":"Where is the NPRV located?","a":"In the airplane fuselage."},
-{"q":"Does the VCU require data from the FMS?","a":"Yes, it uses flight management data from the CCS."},
-{"q":"What color is the \"Cabin Altitude\" label on the EICAS?","a":"Cyan/Blue."},
-{"q":"What does the \"Rate\" display indicate?","a":"The cabin altitude rate of change."},
-{"q":"Which motor is used to bypass VCUs entirely?","a":"The Manual control motor."}
-];
-
-// App state
-let currentSubject = 'Fluid Cooling';
-let currentDeck = fluidCooling;
-let idx = 0;
-
-const qText = document.getElementById('q-text');
-const aText = document.getElementById('a-text');
-const catLabel = document.getElementById('cat-label');
-const currentSystem = document.getElementById('current-system');
-const cardCount = document.getElementById('card-count');
-const progressFill = document.getElementById('progress-fill');
-const mainCard = document.getElementById('main-card');
-const subjectSelect = document.getElementById('subject-select');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
-
-function updateUI() {
-    const item = currentDeck[idx];
-    // ensure face-down
-    mainCard.classList.remove('flipped');
-
-    // smooth swap
-    setTimeout(() => {
-        qText.innerText = item.q;
-        aText.innerText = item.a;
-        catLabel.innerText = item.s || currentSubject;
-        currentSystem.innerText = `Subject: ${currentSubject}`;
-        cardCount.innerText = `${idx + 1} / ${currentDeck.length}`;
-        progressFill.style.width = `${((idx + 1) / currentDeck.length) * 100}%`;
-    }, 120);
-}
-
-function changeCard(step) {
-    idx += step;
-    if (idx < 0) idx = currentDeck.length - 1;
-    if (idx >= currentDeck.length) idx = 0;
-    updateUI();
-}
-
-// keyboard navigation and spacebar flip (prevent default scrolling)
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { changeCard(1); }
-    else if (e.key === 'ArrowLeft') { changeCard(-1); }
-    else if (e.code === 'Space' || e.key === ' ') {
-        e.preventDefault();
-        mainCard.classList.toggle('flipped');
+        const cacSystem = [
+    {
+        "q": "How many CACs are installed on the airplane?",
+        "a": "Four (two per pack)."
+    },
+    {
+        "q": "What drives the CAC?",
+        "a": "A variable-speed electric motor."
+    },
+    {
+        "q": "What type of bearings do CACs use?",
+        "a": "Air bearings."
+    },
+    {
+        "q": "What is the primary purpose of the CAC?",
+        "a": "To pull in external air and provide hot, high-pressure supply air for the packs."
+    },
+    {
+        "q": "What is the maximum speed of a CAC?",
+        "a": "47,929 rpm."
+    },
+    {
+        "q": "Do CACs require oil for lubrication?",
+        "a": "No, they use air bearings."
+    },
+    {
+        "q": "Where is the CAC cooling air exhausted?",
+        "a": "Into the ram air fan outlet duct."
+    },
+    {
+        "q": "What is the source of CAC motor cooling air?",
+        "a": "Conditioned air from the primary heat exchanger."
+    },
+    {
+        "q": "What adjusts the CAC inlet to prevent surges?",
+        "a": "A variable diffuser."
+    },
+    {
+        "q": "How many CACs operate during normal ground operations?",
+        "a": "Only the inboard CACs."
+    },
+    {
+        "q": "What determines which CAC shuts down first during descent?",
+        "a": "The need for nitrogen generation (typically R2)."
+    },
+    {
+        "q": "What is the standard CAC outlet temperature at 35,000 ft?",
+        "a": "200\u00b0F."
+    },
+    {
+        "q": "What is the standard CAC outlet temperature below 30,000 ft?",
+        "a": "170\u00b0F."
+    },
+    {
+        "q": "What is the maximum normal CAC outlet temperature?",
+        "a": "450\u00b0F."
+    },
+    {
+        "q": "Which unit provides speed data to the PCU?",
+        "a": "The CAC motor controller via the CCS."
+    },
+    {
+        "q": "What prevents debris from entering the CAC on the ground?",
+        "a": "The inlet deflector door."
+    },
+    {
+        "q": "How is CAC efficiency controlled?",
+        "a": "By the Variable Diffuser Actuator."
+    },
+    {
+        "q": "What happens to CACs during engine start?",
+        "a": "They decrease speed to 8,720 rpm."
+    },
+    {
+        "q": "Where are CACs located?",
+        "a": "In the pack bays forward of the main gear."
+    },
+    {
+        "q": "What is the function of the acoustic treatment in the CAC?",
+        "a": "Noise reduction."
+    },
+    {
+        "q": "Is the CAC flow sensor located upstream or downstream of the ozone converter?",
+        "a": "Downstream."
+    },
+    {
+        "q": "What type of power does the CAC motor use?",
+        "a": "Variable frequency AC."
+    },
+    {
+        "q": "What protects the CAC from an overheat?",
+        "a": "Automatic shutdown by the PCU if outlet temp exceeds 450\u00b0F."
+    },
+    {
+        "q": "Which CAC is labeled \"L1\"?",
+        "a": "The left inboard compressor."
+    },
+    {
+        "q": "Which CAC is labeled \"R2\"?",
+        "a": "The right outboard compressor."
+    },
+    {
+        "q": "Does a single CAC failure prevent pack operation?",
+        "a": "No, a pack can operate with one CAC."
+    },
+    {
+        "q": "How does the PCU control CAC speed?",
+        "a": "It sends data to the Common Motor Start Controller (CMSC)."
+    },
+    {
+        "q": "What is the CAC intake source?",
+        "a": "External ambient air."
+    },
+    {
+        "q": "What is the role of the CAC in nitrogen generation?",
+        "a": "It provides the high-pressure air source for the NGS."
+    },
+    {
+        "q": "Can the CAC motor be cooled if the pack is off?",
+        "a": "No, it requires heat exchanger air."
     }
-});
+];
 
-// Subject select handler
-subjectSelect.addEventListener('change', (e) => {
-    const val = e.target.value;
-    if (val === 'fluid') {
-        currentSubject = 'Fluid Cooling';
-        currentDeck = fluidCooling;
-    } else if (val === 'equipment') {
-        currentSubject = 'Equipment Cooling';
-        currentDeck = equipmentCooling;
-    } else if (val === 'pressurisation') {
-        currentSubject = 'Pressurisation';
-        currentDeck = pressurisation;
+        const pcuSystem = [
+    {
+        "q": "How many PCUs are installed?",
+        "a": "Two (one per pack)."
+    },
+    {
+        "q": "How many channels does each PCU have?",
+        "a": "Two (dual-channel)."
+    },
+    {
+        "q": "How many channels are active at one time?",
+        "a": "Only one."
+    },
+    {
+        "q": "How is the PCU cooled?",
+        "a": "By air from the lower recirculation heat exchanger."
+    },
+    {
+        "q": "Where does PCU exhaust air go?",
+        "a": "To the ram air outlet duct."
+    },
+    {
+        "q": "Which unit does the PCU send data to for CAC speed control?",
+        "a": "The CMSC."
+    },
+    {
+        "q": "What are the three primary valves the PCU controls?",
+        "a": "LLV, ABPV, and ECV."
+    },
+    {
+        "q": "Does the PCU control the Ram Air Fan?",
+        "a": "Yes, via the RFMC."
+    },
+    {
+        "q": "What unit provides target temperature data to the PCU?",
+        "a": "The Common Core System (CCS)."
+    },
+    {
+        "q": "How does the PCU interface with the pilot?",
+        "a": "Via the CCS and P5 panel."
+    },
+    {
+        "q": "What happens if PCU power is lost?",
+        "a": "Valves move to fail-safe positions."
+    },
+    {
+        "q": "Does the PCU monitor pack bay temperatures?",
+        "a": "Yes, it triggers a shutdown at 235\u00b0F."
+    },
+    {
+        "q": "What loop does the PCU use for CAC flow control?",
+        "a": "The inner loop."
+    },
+    {
+        "q": "What loop does the PCU use for total pack flow accuracy?",
+        "a": "The outer loop."
+    },
+    {
+        "q": "Can the PCU operate the pack in \"Heat Exchanger Only\" mode?",
+        "a": "Yes, if the ACM fails."
+    },
+    {
+        "q": "Does the PCU control the Trim Air Pressure Regulator Valve?",
+        "a": "Yes."
+    },
+    {
+        "q": "How does the PCU control lower recirculation fans?",
+        "a": "It adjusts speed based on total flow requirements."
+    },
+    {
+        "q": "What unit performs the \"BITE\" for the pack?",
+        "a": "The PCU."
+    },
+    {
+        "q": "Where are the PCUs located?",
+        "a": "In the pack bays."
+    },
+    {
+        "q": "Does the PCU control the Ozone Converter?",
+        "a": "No, it monitors the air passing through it."
+    },
+    {
+        "q": "Which PCU controls the Right Inboard CAC?",
+        "a": "The Right PCU."
+    },
+    {
+        "q": "Can one PCU channel control the entire pack?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the PCU's role in the Economy Cooling mode?",
+        "a": "It opens the ECV."
+    },
+    {
+        "q": "How does the PCU respond to a duct overheat?",
+        "a": "It closes the associated trim valve."
+    },
+    {
+        "q": "Does the PCU use feedback from the ACM speed sensor?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the PCU's role during engine start?",
+        "a": "It commands recirculation fans to minimum speed."
+    },
+    {
+        "q": "Does the PCU monitor water extractor levels?",
+        "a": "No, but it manages the LLV to prevent ice."
+    },
+    {
+        "q": "How does the PCU communicate with other controllers?",
+        "a": "Via the CDN (Common Data Network)."
+    },
+    {
+        "q": "Is the PCU responsible for Zonal Drying?",
+        "a": "No, that is a separate controller."
+    },
+    {
+        "q": "Can the PCU reset a pack trip?",
+        "a": "Yes, when commanded by the pilot via the P5 panel."
     }
-    idx = 0;
-    updateUI();
-});
+];
 
-// Prev/Next buttons
-prevBtn.addEventListener('click', () => changeCard(-1));
-nextBtn.addEventListener('click', () => changeCard(1));
+        const deflectorSystem = [
+    {
+        "q": "What is the primary function of the deflector door?",
+        "a": "To protect the CAC inlet from water and debris on the ground."
+    },
+    {
+        "q": "When is the door normally deployed?",
+        "a": "During ground operations."
+    },
+    {
+        "q": "When is the door retracted?",
+        "a": "During flight to reduce drag."
+    },
+    {
+        "q": "What drives the door?",
+        "a": "An electric actuator."
+    },
+    {
+        "q": "What is the door's \"fail-safe\" position?",
+        "a": "Closed (retracted)."
+    },
+    {
+        "q": "What provides the \"closed\" force if the motor fails?",
+        "a": "A spring return device."
+    },
+    {
+        "q": "Which unit controls the door actuator?",
+        "a": "The PCU."
+    },
+    {
+        "q": "Can the airplane fly with the door stuck open?",
+        "a": "Yes, with performance adjustments per MEL."
+    },
+    {
+        "q": "Where is the door located?",
+        "a": "On the bottom of the wing-to-body fairing."
+    },
+    {
+        "q": "Does the door move during takeoff?",
+        "a": "It retracts once airspeed increases."
+    },
+    {
+        "q": "What is the door made of?",
+        "a": "Composite materials (Ref. general structure)."
+    },
+    {
+        "q": "How many actuators are per door?",
+        "a": "One."
+    },
+    {
+        "q": "Is the door linked to the Ram Air doors?",
+        "a": "No, they operate independently."
+    },
+    {
+        "q": "Does the door have a manual override?",
+        "a": "No."
+    },
+    {
+        "q": "What signal tells the PCU to retract the door?",
+        "a": "Weight-off-wheels and airspeed."
+    },
+    {
+        "q": "What prevents the door from vibrating?",
+        "a": "Actuator locking logic."
+    },
+    {
+        "q": "Does the door operate if the associated pack is off?",
+        "a": "No."
+    },
+    {
+        "q": "How is door position sensed?",
+        "a": "By internal actuator switches."
+    },
+    {
+        "q": "Is the door inlet filtered?",
+        "a": "No, it is a direct opening."
+    },
+    {
+        "q": "Does ice affect door operation?",
+        "a": "Yes, but the actuator has high torque to break ice."
+    },
+    {
+        "q": "What is the actuator voltage?",
+        "a": "115V AC (Ref. PCU outputs)."
+    },
+    {
+        "q": "Is the door interchangeable between left and right?",
+        "a": "Yes."
+    },
+    {
+        "q": "Where is the actuator accessed?",
+        "a": "Via the pack bay access panels."
+    },
+    {
+        "q": "Does the door have a \"partially open\" position?",
+        "a": "No, it is binary (open/closed)."
+    },
+    {
+        "q": "What is the door's effect on fuel burn?",
+        "a": "Significant drag if left open in flight."
+    },
+    {
+        "q": "Does the door deploy during landing?",
+        "a": "Yes, upon weight-on-wheels."
+    },
+    {
+        "q": "What is the door's maintenance \"lockout\" procedure?",
+        "a": "PCU circuit breaker or ground maintenance mode."
+    },
+    {
+        "q": "Can a pilot see the door status?",
+        "a": "On the maintenance pages."
+    },
+    {
+        "q": "What protects the actuator from overload?",
+        "a": "Thermal protection in the motor."
+    },
+    {
+        "q": "Does the door assist in ram air recovery?",
+        "a": "No, it is purely for CAC protection."
+    }
+];
 
-// initialize
-(function init() {
-    // default select to fluid (already set in markup), set state accordingly
-    subjectSelect.value = 'fluid';
-    currentSubject = 'Fluid Cooling';
-    currentDeck = fluidCooling;
-    idx = 0;
-    updateUI();
-})();
-</script>
+        const ahvSystem = [
+    {
+        "q": "What is the purpose of the AHV?",
+        "a": "To increase CAC outlet temperature by recirculating air."
+    },
+    {
+        "q": "Where does the AHV take air from?",
+        "a": "The CAC outlet duct."
+    },
+    {
+        "q": "Where does the AHV send the air?",
+        "a": "Back to the CAC inlet."
+    },
+    {
+        "q": "Which unit controls the AHV?",
+        "a": "The PCU."
+    },
+    {
+        "q": "What is the valve type?",
+        "a": "Modulating butterfly valve."
+    },
+    {
+        "q": "Why is adding heat necessary?",
+        "a": "To prevent ice or reach trim air requirements."
+    },
+    {
+        "q": "What is the AHV's fail position?",
+        "a": "Closed."
+    },
+    {
+        "q": "Does the AHV have a manual control?",
+        "a": "No."
+    },
+    {
+        "q": "How many AHVs per pack?",
+        "a": "Two (one per CAC)."
+    },
+    {
+        "q": "What sensor does the PCU use to modulate the AHV?",
+        "a": "CAC outlet temperature sensor."
+    },
+    {
+        "q": "Does the AHV operate at high altitudes?",
+        "a": "Generally no, unless outlet temp is too low."
+    },
+    {
+        "q": "Is the AHV used for surge control?",
+        "a": "It can be used as a secondary method."
+    },
+    {
+        "q": "Where is the AHV located?",
+        "a": "In the CAC supply manifold."
+    },
+    {
+        "q": "What is the AHV actuator power?",
+        "a": "DC electric."
+    },
+    {
+        "q": "Does the AHV affect pack cooling capacity?",
+        "a": "Yes, it reduces it by adding heat."
+    },
+    {
+        "q": "Can the AHV cause a pack trip?",
+        "a": "Yes, if it fails open and causes a CAC overheat."
+    },
+    {
+        "q": "What is the valve diameter?",
+        "a": "Approx 1.5-2 inches (Ref. CAC ducting)."
+    },
+    {
+        "q": "Is there a position indicator?",
+        "a": "Yes, internal to the actuator."
+    },
+    {
+        "q": "Does the AHV operate on the ground?",
+        "a": "Yes, frequently."
+    },
+    {
+        "q": "What is the \"Add Heat\" reference temperature?",
+        "a": "170\u00b0F or 200\u00b0F depending on altitude."
+    },
+    {
+        "q": "Is the AHV used in Economy Cooling?",
+        "a": "No."
+    },
+    {
+        "q": "Does the AHV use PECS cooling?",
+        "a": "No."
+    },
+    {
+        "q": "Is the AHV interchangeable with the LLV?",
+        "a": "No."
+    },
+    {
+        "q": "What happens if the AHV is stuck closed?",
+        "a": "Lower trim air capability."
+    },
+    {
+        "q": "What happens if the AHV is stuck open?",
+        "a": "High CAC outlet temps and potential shutdown."
+    },
+    {
+        "q": "Does the AHV require regular lubrication?",
+        "a": "No."
+    },
+    {
+        "q": "How is it accessed?",
+        "a": "CAC access panels."
+    },
+    {
+        "q": "Does it have a spring return?",
+        "a": "Yes, to the closed position."
+    },
+    {
+        "q": "Is the AHV involved in the Ozone conversion?",
+        "a": "No."
+    },
+    {
+        "q": "What is its primary maintenance task?",
+        "a": "Visual inspection and BITE test."
+    }
+];
+
+        const ozoneSystem = [
+    {
+        "q": "What is the primary function of the ozone converter?",
+        "a": "To remove ozone from CAC supply air."
+    },
+    {
+        "q": "Where is it located?",
+        "a": "Downstream of the CACs, upstream of the pack."
+    },
+    {
+        "q": "How does it remove ozone?",
+        "a": "Catalytic conversion (O3 to O2)."
+    },
+    {
+        "q": "How many ozone converters are installed?",
+        "a": "Two (one per pack)."
+    },
+    {
+        "q": "Does it have any moving parts?",
+        "a": "No."
+    },
+    {
+        "q": "Does it require electrical power?",
+        "a": "No."
+    },
+    {
+        "q": "What is the core material?",
+        "a": "Precious metal catalyst on a honeycomb structure."
+    },
+    {
+        "q": "Does it affect air temperature?",
+        "a": "It causes a slight temperature rise due to the chemical reaction."
+    },
+    {
+        "q": "What is the ozone converter's lifespan?",
+        "a": "Dependent on flight hours and ozone exposure."
+    },
+    {
+        "q": "Where is the trim air taken from?",
+        "a": "Downstream of the ozone converter."
+    },
+    {
+        "q": "Can the converter be clogged?",
+        "a": "Yes, by dust or oil, reducing efficiency."
+    },
+    {
+        "q": "Is there an \"Ozone Trip\"?",
+        "a": "No."
+    },
+    {
+        "q": "How is its efficiency monitored?",
+        "a": "Generally not monitored in flight; periodic lab testing."
+    },
+    {
+        "q": "What is the casing made of?",
+        "a": "Stainless steel or titanium."
+    },
+    {
+        "q": "Does the converter remove smells?",
+        "a": "It can reduce some odors but is optimized for ozone."
+    },
+    {
+        "q": "Is it bypassed during ground operations?",
+        "a": "No, all CAC air passes through it."
+    },
+    {
+        "q": "Does high temperature help the reaction?",
+        "a": "Yes, catalytic conversion is more efficient with hot air."
+    },
+    {
+        "q": "Where is it accessed?",
+        "a": "Aft of the CACs in the pack bay."
+    },
+    {
+        "q": "What are the inlet/outlet diameters?",
+        "a": "Approx 4 inches."
+    },
+    {
+        "q": "Is the ozone converter interchangeable?",
+        "a": "Yes, between left and right packs."
+    },
+    {
+        "q": "Does the converter require PECS cooling?",
+        "a": "No."
+    },
+    {
+        "q": "What happens if it fails?",
+        "a": "Ozone enters the cabin, causing discomfort/health issues."
+    },
+    {
+        "q": "Does it have sensors?",
+        "a": "No, though temp sensors are nearby."
+    },
+    {
+        "q": "Is it part of the ACM?",
+        "a": "No, it is a separate duct component."
+    },
+    {
+        "q": "Does it function if only one CAC is running?",
+        "a": "Yes."
+    },
+    {
+        "q": "Is it removed for cleaning?",
+        "a": "No, it is usually replaced."
+    },
+    {
+        "q": "Does it restrict airflow?",
+        "a": "Minimally."
+    },
+    {
+        "q": "Is it protected by a filter?",
+        "a": "No, the CAC inlet is the only protection."
+    },
+    {
+        "q": "Does it function on the ground?",
+        "a": "Yes, but ozone is rare at sea level."
+    },
+    {
+        "q": "Can it be installed backwards?",
+        "a": "No, it is keyed or flanged specifically."
+    }
+];
+
+        const sensorsSystem = [
+    {
+        "q": "Where is the CAC flow sensor located?",
+        "a": "Downstream of the ozone converter."
+    },
+    {
+        "q": "What does the flow sensor measure?",
+        "a": "Total mass airflow from the two CACs in a pack."
+    },
+    {
+        "q": "How many inlet pressure sensors per pack?",
+        "a": "Two (one per CAC)."
+    },
+    {
+        "q": "What is measured by the inlet pressure sensor?",
+        "a": "Ambient air pressure at the CAC intake."
+    },
+    {
+        "q": "Where is the CAC outlet pressure sensor?",
+        "a": "In the duct before the pack."
+    },
+    {
+        "q": "Which unit uses sensor data to calculate flow?",
+        "a": "The PCU."
+    },
+    {
+        "q": "Can the airplane fly with one CAC inlet pressure sensor failed?",
+        "a": "Yes, if the other sensor in that pack is good."
+    },
+    {
+        "q": "What is the purpose of the outlet temp sensor?",
+        "a": "To protect the CAC from overheating."
+    },
+    {
+        "q": "Does the PCU use sensors for surge control?",
+        "a": "Yes, it compares inlet and outlet data."
+    },
+    {
+        "q": "What type of data is sent from the flow sensor?",
+        "a": "Digital signal to the PCU."
+    },
+    {
+        "q": "Is there a sensor for CAC motor temperature?",
+        "a": "Yes, internal to the motor/controller."
+    },
+    {
+        "q": "What does the PCU do if flow is too low?",
+        "a": "Increases CAC speed or adjusts the variable diffuser."
+    },
+    {
+        "q": "Are these sensors accessed in the pack bay?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the flow sensor detect reverse flow?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the \"inner loop\" of the flow sensor used for?",
+        "a": "Primary pack flow control."
+    },
+    {
+        "q": "What is the \"outer loop\" used for?",
+        "a": "Flow rate calculation and accuracy."
+    },
+    {
+        "q": "Are the sensors dual-channel?",
+        "a": "Most are single-channel but redundant by pack layout."
+    },
+    {
+        "q": "What happens if the outlet pressure sensor fails?",
+        "a": "The pack may revert to a backup control mode."
+    },
+    {
+        "q": "Do these sensors require calibration?",
+        "a": "Generally no; they are self-testing."
+    },
+    {
+        "q": "Is the flow sensor a Pitot-static type?",
+        "a": "Yes (Ref. flow sensor technology)."
+    },
+    {
+        "q": "Does the PCU monitor CAC current?",
+        "a": "No, the CMSC does."
+    },
+    {
+        "q": "What is the sensor's power source?",
+        "a": "Low voltage DC from the PCU."
+    },
+    {
+        "q": "Can sensors be swapped for troubleshooting?",
+        "a": "Yes, if they share the same part number."
+    },
+    {
+        "q": "Is moisture a problem for the flow sensor?",
+        "a": "Yes, but the CAC air is hot enough to prevent ice."
+    },
+    {
+        "q": "Where is the CAC 1 pressure sensor located?",
+        "a": "In the inlet duct near the deflector door."
+    },
+    {
+        "q": "Where is the CAC 2 pressure sensor located?",
+        "a": "Corresponding position on the outboard side."
+    },
+    {
+        "q": "Does the PCU log sensor faults?",
+        "a": "Yes, in the BITE memory."
+    },
+    {
+        "q": "Is there a \"Total Air Temperature\" sensor for the CAC?",
+        "a": "Yes, at the inlet."
+    },
+    {
+        "q": "What is the flow sensor's maximum range?",
+        "a": "Approx 200 lb/min (Ref. total pack flow)."
+    },
+    {
+        "q": "Are the sensors protected against lightning?",
+        "a": "Yes, via shielding and bonding."
+    }
+];
+
+        const packsSystem = [
+    {
+        "q": "What is a \"Pack\"?",
+        "a": "A group of components that makes cold, dry air from hot CAC air."
+    },
+    {
+        "q": "How many packs are on the airplane?",
+        "a": "Two."
+    },
+    {
+        "q": "Does a pack use moisture to increase humidity?",
+        "a": "No, it removes moisture."
+    },
+    {
+        "q": "What are the two primary cooling methods in a pack?",
+        "a": "Heat exchangers and the ACM."
+    },
+    {
+        "q": "Can the airplane fly with one pack inoperative?",
+        "a": "Yes, with altitude limits."
+    },
+    {
+        "q": "What is \"Heat Exchanger Only\" mode?",
+        "a": "Cooling using only ram air when the ACM is failed."
+    },
+    {
+        "q": "What is the pack outlet check valve for?",
+        "a": "To prevent reverse flow from the mix manifold."
+    },
+    {
+        "q": "Where are the packs located?",
+        "a": "In the pack bays, forward of the main gear."
+    },
+    {
+        "q": "What triggers an automatic pack shutdown?",
+        "a": "Pack bay overheat (235\u00b0F)."
+    },
+    {
+        "q": "How is the pack cooled on the ground?",
+        "a": "By the Ram Air Fan."
+    },
+    {
+        "q": "Does the pack use PECS?",
+        "a": "No, it uses ram air and the ACM."
+    },
+    {
+        "q": "What is the \"Compact Mixer\"?",
+        "a": "The point where pack air mixes with recirc air."
+    },
+    {
+        "q": "Is pack air used for wing anti-ice?",
+        "a": "No (electric airplane)."
+    },
+    {
+        "q": "How much does a cooling pack weigh?",
+        "a": "Several hundred pounds (Ref. general structure)."
+    },
+    {
+        "q": "What is the pack's primary target?",
+        "a": "To meet the coldest zone temperature requirement."
+    },
+    {
+        "q": "Does the pack operate during engine start?",
+        "a": "It may shut down or reduce flow."
+    },
+    {
+        "q": "What signal does the PCU use for pack flow control?",
+        "a": "CAC flow sensor data."
+    },
+    {
+        "q": "Are the packs identical?",
+        "a": "Yes, but mirrored in installation."
+    },
+    {
+        "q": "How many ACM turbines are used per pack?",
+        "a": "Two (T1 and T2)."
+    },
+    {
+        "q": "What is the first stage of cooling?",
+        "a": "The primary heat exchanger."
+    },
+    {
+        "q": "What is the final stage of cooling?",
+        "a": "The T2 turbine."
+    },
+    {
+        "q": "Can the pilot turn a pack off manually?",
+        "a": "Yes, via the P5 panel."
+    },
+    {
+        "q": "Does the pack have an \"Auto\" mode?",
+        "a": "Yes, it is the standard mode."
+    },
+    {
+        "q": "Does the pack remove CO2?",
+        "a": "No, it relies on fresh air exchange."
+    },
+    {
+        "q": "How is the pack accessed for maintenance?",
+        "a": "Large lower bay doors."
+    },
+    {
+        "q": "What is the pack's maximum flow rate?",
+        "a": "Sufficient to provide fresh air for a full cabin."
+    },
+    {
+        "q": "Is the pack part of the PECS system?",
+        "a": "No, they are separate cooling systems."
+    },
+    {
+        "q": "Does the pack have its own fire detection?",
+        "a": "No, it uses the overheat sensors."
+    },
+    {
+        "q": "What happens if both packs fail?",
+        "a": "The AVS system opens for ventilation."
+    },
+    {
+        "q": "Is pack operation linked to landing altitude?",
+        "a": "No, that is the pressurization system."
+    }
+];
+
+        const ramSystem = [
+    {
+        "q": "What is the purpose of the ram air inlet door?",
+        "a": "To regulate the amount of cooling air for the heat exchangers."
+    },
+    {
+        "q": "How many ram air inlet doors per pack?",
+        "a": "One."
+    },
+    {
+        "q": "What drives the ram air doors?",
+        "a": "Electric actuators."
+    },
+    {
+        "q": "Which system has priority for ram air door control?",
+        "a": "PECS."
+    },
+    {
+        "q": "What is the maximum ground opening for the outlet door?",
+        "a": "45 degrees."
+    },
+    {
+        "q": "What is the \"Inlet Header\"?",
+        "a": "The distribution point for ram air into the heat exchangers."
+    },
+    {
+        "q": "Are ram air doors binary or modulating?",
+        "a": "Modulating."
+    },
+    {
+        "q": "Where is the water spray nozzle located?",
+        "a": "In the ram air inlet header."
+    },
+    {
+        "q": "Does the inlet door close during cruise?",
+        "a": "It modulates to a small opening to reduce drag."
+    },
+    {
+        "q": "What is the \"Ram Air Deflector\"?",
+        "a": "A device to prevent water/debris ingestion."
+    },
+    {
+        "q": "How is the outlet door different from the inlet door?",
+        "a": "It controls air exit to manage pressure/drag."
+    },
+    {
+        "q": "Does the door operate if the Ram Air Fan is on?",
+        "a": "Yes."
+    },
+    {
+        "q": "What unit controls the ram air actuators?",
+        "a": "The PCU."
+    },
+    {
+        "q": "What is the ram air source on the ground?",
+        "a": "Ambient air pulled by the fan."
+    },
+    {
+        "q": "Can the ram air doors be moved manually for maintenance?",
+        "a": "Yes, via the Knurled knob."
+    },
+    {
+        "q": "Is there an indicator for door position?",
+        "a": "Yes, on the actuator."
+    },
+    {
+        "q": "Does the door close if smoke is detected in the pack?",
+        "a": "No (Ref. shutdown logic)."
+    },
+    {
+        "q": "What is the door construction?",
+        "a": "Carbon fiber/composite."
+    },
+    {
+        "q": "What prevents reverse flow in the ram air system?",
+        "a": "The ram air fan check valve."
+    },
+    {
+        "q": "Are the left and right doors interchangeable?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the system use ram air for ACM cooling?",
+        "a": "Indirectly, through the heat exchangers."
+    },
+    {
+        "q": "What is the actuator voltage?",
+        "a": "115V AC."
+    },
+    {
+        "q": "How is ice prevented on the ram air doors?",
+        "a": "Aerodynamic design and actuator torque."
+    },
+    {
+        "q": "Is there a \"Ram Air\" light on the P5 panel?",
+        "a": "No, it is integrated into pack status."
+    },
+    {
+        "q": "What happens if a door actuator fails?",
+        "a": "The door remains in the last position."
+    },
+    {
+        "q": "Do the doors move during takeoff?",
+        "a": "Yes, they modulate to a takeoff position."
+    },
+    {
+        "q": "Is ram air used for the PECS heat exchanger?",
+        "a": "Yes, it is the primary cooling source."
+    },
+    {
+        "q": "Where does the ram air exit the airplane?",
+        "a": "Through the outlet doors on the bottom of the fuselage."
+    },
+    {
+        "q": "Are the outlet doors linked together?",
+        "a": "No, they are independent per pack."
+    },
+    {
+        "q": "Does the inlet header contain any sensors?",
+        "a": "Yes, temperature sensors."
+    }
+];
+
+        const fanSystem = [
+    {
+        "q": "What is the purpose of the Ram Air Fan?",
+        "a": "To provide cooling airflow when ram air is insufficient (ground/low speed)."
+    },
+    {
+        "q": "What drives the Ram Air Fan?",
+        "a": "An electric motor."
+    },
+    {
+        "q": "What unit controls the fan?",
+        "a": "The Ram Air Fan Motor Controller (RFMC)."
+    },
+    {
+        "q": "How is the RFMC cooled?",
+        "a": "By PECS liquid coolant."
+    },
+    {
+        "q": "When does the fan operate in flight?",
+        "a": "At low airspeeds if cooling is needed."
+    },
+    {
+        "q": "What is \"Windmilling protection\"?",
+        "a": "The RFMC runs the fan at 500 rpm to prevent bearing damage."
+    },
+    {
+        "q": "How many fans per pack?",
+        "a": "One."
+    },
+    {
+        "q": "What is the maximum fan speed?",
+        "a": "Approx 22,000 rpm."
+    },
+    {
+        "q": "What prevents reverse airflow through the fan?",
+        "a": "The Ram Air Fan Check Valve."
+    },
+    {
+        "q": "Is the fan motor AC or DC?",
+        "a": "Variable frequency AC."
+    },
+    {
+        "q": "Where is the fan located?",
+        "a": "In the ram air outlet duct."
+    },
+    {
+        "q": "Does the fan run during cruise?",
+        "a": "No, it is generally off or in windmilling protection."
+    },
+    {
+        "q": "What happens if the RFMC fails?",
+        "a": "The fan is inoperative, limiting ground cooling."
+    },
+    {
+        "q": "Does the fan assist in CAC motor cooling?",
+        "a": "Yes, by creating a pressure drop in the exhaust duct."
+    },
+    {
+        "q": "Is the RFMC a dual-channel unit?",
+        "a": "No, it is single-channel."
+    },
+    {
+        "q": "How is the RFMC accessed?",
+        "a": "In the pack bay."
+    },
+    {
+        "q": "Does the fan have a BITE test?",
+        "a": "Yes, initiated by the PCU."
+    },
+    {
+        "q": "Is the check valve flapper-type?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the fan operate during PECS high-load conditions?",
+        "a": "Yes, even if the pack is off."
+    },
+    {
+        "q": "What is the power source for the RFMC?",
+        "a": "115V AC from the main power panels."
+    },
+    {
+        "q": "Can the fan be heard in the cabin?",
+        "a": "Only slightly during ground operations."
+    },
+    {
+        "q": "Is the fan motor cooled by air or liquid?",
+        "a": "Air-cooled."
+    },
+    {
+        "q": "Does the RFMC communicate via the CCS?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the primary cause of fan failure?",
+        "a": "Bearing wear or controller overheat."
+    },
+    {
+        "q": "Is the fan assembly interchangeable?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the \"Pre-charge\" procedure for the RFMC?",
+        "a": "Adding PECS coolant to the controller before installation."
+    },
+    {
+        "q": "Does the fan run during engine start?",
+        "a": "Usually, it is shed."
+    },
+    {
+        "q": "Is the check valve spring-loaded?",
+        "a": "Yes, to the closed position."
+    },
+    {
+        "q": "What is the fan's effect on ground noise?",
+        "a": "Significant; it is a major noise source."
+    },
+    {
+        "q": "Does the PCU monitor fan current?",
+        "a": "Yes, via the RFMC."
+    }
+];
+
+        const heatexSystem = [
+    {
+        "q": "What is the role of the Primary Heat Exchanger?",
+        "a": "To perform the first cooling stage of hot CAC air."
+    },
+    {
+        "q": "Where is CAC air sent after the Primary HE?",
+        "a": "To the ACM Compressor."
+    },
+    {
+        "q": "What is the role of the Secondary Heat Exchanger?",
+        "a": "To cool air after it has been heated by the ACM Compressor."
+    },
+    {
+        "q": "What is the cooling medium for the heat exchangers?",
+        "a": "External ram air."
+    },
+    {
+        "q": "Are the Primary and Secondary HEs physically combined?",
+        "a": "Yes, in a single dual-pass core assembly."
+    },
+    {
+        "q": "How is cooling improved during hot days?",
+        "a": "By spraying water into the ram air header."
+    },
+    {
+        "q": "Where does the spray water come from?",
+        "a": "The pack's water extractor."
+    },
+    {
+        "q": "What is the HE assembly made of?",
+        "a": "Aluminum plate-fin structure."
+    },
+    {
+        "q": "Can the HE be cleaned?",
+        "a": "Yes, by back-flushing or chemical cleaning."
+    },
+    {
+        "q": "What happens if the HE is clogged with external dirt?",
+        "a": "Pack outlet temperature rises."
+    },
+    {
+        "q": "Is there a PECS heat exchanger in the pack bay?",
+        "a": "Yes, it is often mounted in parallel or series with the pack HEs."
+    },
+    {
+        "q": "What is the ACM Compressor's effect on temperature?",
+        "a": "It increases air temperature before it enters the Secondary HE."
+    },
+    {
+        "q": "How is ram air flow across the HE controlled?",
+        "a": "By the Ram Air Inlet and Outlet doors."
+    },
+    {
+        "q": "Does the HE have any moving parts?",
+        "a": "No."
+    },
+    {
+        "q": "Is there a bypass for the heat exchangers?",
+        "a": "No, all air passes through them."
+    },
+    {
+        "q": "What happens if an HE core leaks?",
+        "a": "Loss of conditioned air and potential airframe contamination."
+    },
+    {
+        "q": "Where is the HE assembly mounted?",
+        "a": "In the upper part of the ram air duct."
+    },
+    {
+        "q": "Are HEs interchangeable between left and right packs?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the typical temperature drop across the Primary HE?",
+        "a": "100\u00b0F to 200\u00b0F."
+    },
+    {
+        "q": "Does ice form on the ram side of the HE?",
+        "a": "Rarely, as the conditioned air side is very hot."
+    },
+    {
+        "q": "How is the HE protected from debris?",
+        "a": "By the ram air deflector."
+    },
+    {
+        "q": "What unit monitors HE performance?",
+        "a": "The PCU via temp sensors."
+    },
+    {
+        "q": "Is the Primary HE used for trim air?",
+        "a": "No, trim air is taken before the HE."
+    },
+    {
+        "q": "Is ram air temperature measured?",
+        "a": "Yes, at the header."
+    },
+    {
+        "q": "Does the HE assembly require electrical power?",
+        "a": "No."
+    },
+    {
+        "q": "What is the weight of the HE assembly?",
+        "a": "Approx 100-150 lbs."
+    },
+    {
+        "q": "Can one core be replaced independently?",
+        "a": "No, it is a single unit."
+    },
+    {
+        "q": "Does smoke in the ram air duct affect the cabin?",
+        "a": "Only if the HE core is leaking."
+    },
+    {
+        "q": "Is there a \"Bypass Valve\" for the Secondary HE?",
+        "a": "No, but the ACM can be bypassed."
+    },
+    {
+        "q": "What maintenance is required for the spray nozzles?",
+        "a": "Inspection for clogs."
+    }
+];
+
+        const acmSystem = [
+    {
+        "q": "How many major sections does the ACM have?",
+        "a": "Three (Compressor, T1, T2)."
+    },
+    {
+        "q": "What type of bearings does the ACM use?",
+        "a": "Air bearings."
+    },
+    {
+        "q": "Does the ACM use oil?",
+        "a": "No."
+    },
+    {
+        "q": "What is the purpose of the ACM Compressor?",
+        "a": "To increase air pressure and temperature for better heat exchange."
+    },
+    {
+        "q": "What does the T1 Turbine do?",
+        "a": "Provides initial expansion cooling to the air."
+    },
+    {
+        "q": "What does the T2 Turbine do?",
+        "a": "Provides the final expansion cooling before distribution."
+    },
+    {
+        "q": "What is the maximum speed of the ACM?",
+        "a": "Approx 40,000 - 50,000 rpm."
+    },
+    {
+        "q": "How is the ACM speed monitored?",
+        "a": "By a speed sensor that sends data to the PCU."
+    },
+    {
+        "q": "What is the \"Fail-safe\" if the ACM seizes?",
+        "a": "The pack operates in \"Heat Exchanger Only\" mode."
+    },
+    {
+        "q": "Where is the ACM located?",
+        "a": "Centrally in the pack bay."
+    },
+    {
+        "q": "Does the ACM generate electrical power?",
+        "a": "No, it is a purely pneumatic device."
+    },
+    {
+        "q": "What drives the ACM?",
+        "a": "The energy of the compressed CAC air."
+    },
+    {
+        "q": "What is the \"Economy Cooling Valve\" used for?",
+        "a": "To bypass the compressor and T1 at high altitudes."
+    },
+    {
+        "q": "How is the ACM cooled?",
+        "a": "By the air flowing through it."
+    },
+    {
+        "q": "What prevents overspeed?",
+        "a": "The PCU modulates valves (LLV/ABPV) to reduce flow."
+    },
+    {
+        "q": "Can the ACM be repaired on wing?",
+        "a": "No, it is an LRU."
+    },
+    {
+        "q": "Does the ACM produce noise?",
+        "a": "Yes, it is the primary source of pack noise."
+    },
+    {
+        "q": "What happens to the ACM during Economy Cooling?",
+        "a": "Only the T2 turbine is active."
+    },
+    {
+        "q": "Is the ACM part of the \"Cold Manifold\"?",
+        "a": "Yes."
+    },
+    {
+        "q": "Are the ACMs interchangeable?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the purpose of the T1 outlet duct?",
+        "a": "To send air to the condenser."
+    },
+    {
+        "q": "Does a bearing failure cause smoke?",
+        "a": "Yes, from friction heat, even without oil."
+    },
+    {
+        "q": "Is there a temperature sensor at the ACM outlet?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the weight of the ACM?",
+        "a": "Approx 80-100 lbs."
+    },
+    {
+        "q": "How is it accessed?",
+        "a": "Main pack bay door."
+    },
+    {
+        "q": "Does the ACM use PECS cooling?",
+        "a": "No."
+    },
+    {
+        "q": "What is the typical life of air bearings?",
+        "a": "Highly reliable (thousands of hours)."
+    },
+    {
+        "q": "Can the pilot see ACM speed?",
+        "a": "On the maintenance pages."
+    },
+    {
+        "q": "What is the ACM's cooling capacity?",
+        "a": "Expressed in tons of refrigeration (Ref. technical specs)."
+    },
+    {
+        "q": "Does high humidity affect the ACM?",
+        "a": "No, it aids cooling via condensation energy."
+    }
+];
+
+        const condenserSystem = [
+    {
+        "q": "What is the purpose of the Condenser?",
+        "a": "To turn water vapor into liquid water droplets."
+    },
+    {
+        "q": "How many passes does air make through the condenser?",
+        "a": "Two."
+    },
+    {
+        "q": "What component actually removes the liquid water?",
+        "a": "The Water Extractor."
+    },
+    {
+        "q": "Where does the extracted water go?",
+        "a": "To the ram air duct spray nozzles."
+    },
+    {
+        "q": "How is ice prevented in the condenser?",
+        "a": "By the Low Limit Valve (LLV)."
+    },
+    {
+        "q": "Is the condenser an air-to-air heat exchanger?",
+        "a": "Yes."
+    },
+    {
+        "q": "What cools the condenser air?",
+        "a": "Cold air from the T1 turbine."
+    },
+    {
+        "q": "Where is the water extractor located?",
+        "a": "Downstream of the condenser."
+    },
+    {
+        "q": "What happens if the water extractor is clogged?",
+        "a": "Water enters the cabin ducts (rain in the plane)."
+    },
+    {
+        "q": "Does the condenser use any electrical power?",
+        "a": "No."
+    },
+    {
+        "q": "Is the water extractor a centrifuge type?",
+        "a": "No, it uses static vanes (Ref. typical design)."
+    },
+    {
+        "q": "What is the \"Condenser Bypass\"?",
+        "a": "Controlled by the Economy Cooling Valve."
+    },
+    {
+        "q": "Does water extraction happen at high altitudes?",
+        "a": "Minimal, as high altitude air is very dry."
+    },
+    {
+        "q": "Are condenser units interchangeable?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the condenser core made of?",
+        "a": "Aluminum."
+    },
+    {
+        "q": "Can the water extractor freeze?",
+        "a": "Yes, if the LLV fails."
+    },
+    {
+        "q": "Is the spray nozzle system automatic?",
+        "a": "Yes, purely pneumatic/pressure driven."
+    },
+    {
+        "q": "Where is the condenser accessed?",
+        "a": "Center of the pack bay."
+    },
+    {
+        "q": "What is the typical pressure drop across the condenser?",
+        "a": "1-2 psi."
+    },
+    {
+        "q": "Does the water extractor have a filter?",
+        "a": "No."
+    },
+    {
+        "q": "Is there a water level sensor?",
+        "a": "No."
+    },
+    {
+        "q": "What happens to excess water if the nozzles are clogged?",
+        "a": "It overflows into the ram air duct."
+    },
+    {
+        "q": "Does the condenser use PECS?",
+        "a": "No."
+    },
+    {
+        "q": "How is the condenser bypass sensed?",
+        "a": "By pack outlet humidity/temp."
+    },
+    {
+        "q": "Is the condenser physically part of the ACM?",
+        "a": "No, it is a separate duct component."
+    },
+    {
+        "q": "Does the condenser affect T2 inlet temperature?",
+        "a": "Yes, it pre-cools it."
+    },
+    {
+        "q": "What is the weight of the condenser?",
+        "a": "Approx 40-60 lbs."
+    },
+    {
+        "q": "Does the condenser assist in Economy Cooling?",
+        "a": "It is partially bypassed."
+    },
+    {
+        "q": "Are there heaters in the water extractor?",
+        "a": "No, it relies on warm air from the LLV."
+    },
+    {
+        "q": "Is condensation visible on the unit?",
+        "a": "Yes, it is usually insulated to prevent bay dripping."
+    }
+];
+
+        const valvesSystem = [
+    {
+        "q": "What does LLV stand for?",
+        "a": "Low Limit Valve."
+    },
+    {
+        "q": "What is the function of the LLV?",
+        "a": "To prevent the condenser from freezing."
+    },
+    {
+        "q": "What does ABPV stand for?",
+        "a": "ACM Bypass Valve."
+    },
+    {
+        "q": "What is the function of the ABPV?",
+        "a": "To control pack outlet temperature by mixing hot air with cold ACM air."
+    },
+    {
+        "q": "What does ECV stand for?",
+        "a": "Economy Cooling Valve."
+    },
+    {
+        "q": "When does the ECV open?",
+        "a": "During cruise above 30,000 ft."
+    },
+    {
+        "q": "Which unit controls all three valves?",
+        "a": "The PCU."
+    },
+    {
+        "q": "Are these valves electric or pneumatic?",
+        "a": "Electric (Ref. PCU system)."
+    },
+    {
+        "q": "What is the fail-safe position of the ABPV?",
+        "a": "Full Open (max heat)."
+    },
+    {
+        "q": "What is the fail-safe position of the LLV?",
+        "a": "Full Open (to prevent ice)."
+    },
+    {
+        "q": "Does the ECV have a manual override?",
+        "a": "Yes, a knurled knob."
+    },
+    {
+        "q": "Which valve is used most during descent?",
+        "a": "ABPV."
+    },
+    {
+        "q": "What is the diameter of the ABPV?",
+        "a": "Approx 3.5 inches."
+    },
+    {
+        "q": "Does the LLV add heat to the ACM?",
+        "a": "No, it adds heat to the condenser."
+    },
+    {
+        "q": "Can a failed ECV cause a pack shutdown?",
+        "a": "Yes, if the ACM overspeeds."
+    },
+    {
+        "q": "Where is the LLV located?",
+        "a": "In the duct between the Secondary HE and the Condenser."
+    },
+    {
+        "q": "Where is the ABPV located?",
+        "a": "Between the Secondary HE and the pack outlet."
+    },
+    {
+        "q": "Is there a position indicator for the LLV?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the \"Economy Cooling\" mode's benefit?",
+        "a": "Reduced electrical load and drag."
+    },
+    {
+        "q": "Does the ABPV modulate constantly?",
+        "a": "Yes, to maintain zone targets."
+    },
+    {
+        "q": "What happens if the LLV is stuck closed?",
+        "a": "Condenser freezes, stopping airflow."
+    },
+    {
+        "q": "What unit provides the temperature signal for the LLV?",
+        "a": "The condenser outlet sensor."
+    },
+    {
+        "q": "Is the ECV a butterfly valve?",
+        "a": "Yes."
+    },
+    {
+        "q": "Are the actuators interchangeable between ABPV and ECV?",
+        "a": "Often yes (Ref. part numbers)."
+    },
+    {
+        "q": "Does the PCU calibrate these valves?",
+        "a": "Yes, upon power-up."
+    },
+    {
+        "q": "Can these valves be accessed without removing the pack?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the ABPV operate on the ground?",
+        "a": "Yes, to prevent over-cooling."
+    },
+    {
+        "q": "What is the \"Heat Exchanger Only\" valve configuration?",
+        "a": "ECV open, ABPV open, ACM bypassed."
+    },
+    {
+        "q": "Is the TAPRV one of these three?",
+        "a": "No, it is the Trim Air Pressure Regulator Valve."
+    },
+    {
+        "q": "Do these valves use PECS cooling?",
+        "a": "No."
+    }
+];
+
+        const overheatSystem = [
+    {
+        "q": "What triggers a Pack shutdown due to bay temperature?",
+        "a": "235\u00b0F for 40 seconds."
+    },
+    {
+        "q": "What is the WAP system?",
+        "a": "Wing/Pack overheat protection (Ref. general logic)."
+    },
+    {
+        "q": "How many overheat sensors are in the pack bay?",
+        "a": "Multiple dual-element sensors."
+    },
+    {
+        "q": "Which unit monitors the overheat elements?",
+        "a": "The Overheat Protection Controller (OPC)."
+    },
+    {
+        "q": "Where is the OPC located?",
+        "a": "In the EE center area."
+    },
+    {
+        "q": "Does the OPC communicate with the PCU?",
+        "a": "Yes, via the CDN."
+    },
+    {
+        "q": "What is a \"Duct Overheat\"?",
+        "a": "Air temperature in the supply duct exceeding 180\u00b0F - 250\u00b0F."
+    },
+    {
+        "q": "Does an overheat trip require a manual reset?",
+        "a": "Yes, via the P5 panel."
+    },
+    {
+        "q": "What happens if only one element of a dual sensor detects heat?",
+        "a": "Generally causes a status message but not a shutdown (dual-loop logic)."
+    },
+    {
+        "q": "Is there a specific fire detection loop in the pack bay?",
+        "a": "No, it uses the overheat system."
+    },
+    {
+        "q": "What is the \"Overheat Controller\" channel count?",
+        "a": "Two channels per controller."
+    },
+    {
+        "q": "Does an overheat trip close the CACs?",
+        "a": "Yes, it shuts down the associated compressors."
+    },
+    {
+        "q": "Can the flight crew see the specific location of an overheat?",
+        "a": "Yes, on the synoptic/EICAS."
+    },
+    {
+        "q": "What is the purpose of the \"Keel Beam\" overheat sensor?",
+        "a": "Detects leaks in the CAC supply duct."
+    },
+    {
+        "q": "Are sensors \"Eutectic\" or \"Thermistor\"?",
+        "a": "Thermistor-based (Ref. modern logic)."
+    },
+    {
+        "q": "Do overheat sensors require PECS cooling?",
+        "a": "No."
+    },
+    {
+        "q": "What is the \"Reset\" procedure for a trim air trip?",
+        "a": "Cycle the zone temperature switch."
+    },
+    {
+        "q": "Does the OPC shut down the Ram Air Fan during an overheat?",
+        "a": "No, the fan helps cool the bay."
+    },
+    {
+        "q": "Is there a test for the overheat system?",
+        "a": "Yes, the PCU/OPC performs a self-test."
+    },
+    {
+        "q": "Can the airplane fly with an OPC failed?",
+        "a": "MEL dependent, usually restricted."
+    },
+    {
+        "q": "What is the shutdown temp for the CAC motor?",
+        "a": "Approx 300\u00b0F (Ref. motor controller logic)."
+    },
+    {
+        "q": "Does the mix manifold have an overheat sensor?",
+        "a": "No, sensors are in individual zone ducts."
+    },
+    {
+        "q": "What is the \"Trip\" temp for a shoulder heater?",
+        "a": "200\u00b0F."
+    },
+    {
+        "q": "What is the \"Trip\" temp for a foot rest heater?",
+        "a": "106\u00b0F."
+    },
+    {
+        "q": "Is there an overheat sensor in the EE bay?",
+        "a": "Yes, part of the EE cooling system."
+    },
+    {
+        "q": "What does \"LOCI\" stand for?",
+        "a": "Loss of Conditioned Inflow."
+    },
+    {
+        "q": "Does LOCI cause an overheat?",
+        "a": "It can lead to one if the EE cooling fails."
+    },
+    {
+        "q": "How are sensors mounted to the ducts?",
+        "a": "Via clamps or mounting blocks."
+    },
+    {
+        "q": "Is the OPC interchangeable?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the WAP system affect hydraulic cooling?",
+        "a": "No, separate system."
+    }
+];
+
+        const recircSystem = [
+    {
+        "q": "What is the purpose of the Lower Recirculation system?",
+        "a": "To reduce the load on the packs by reusing cabin air."
+    },
+    {
+        "q": "How many lower recirculation fans are there?",
+        "a": "Two (one per pack side)."
+    },
+    {
+        "q": "What component cools the recirculated air?",
+        "a": "The Lower Recirculation Heat Exchanger."
+    },
+    {
+        "q": "What cooling medium does this heat exchanger use?",
+        "a": "PECS liquid."
+    },
+    {
+        "q": "Where is the recirculated air mixed with fresh air?",
+        "a": "In the Compact Mixer."
+    },
+    {
+        "q": "What filter is used in this system?",
+        "a": "HEPA filters."
+    },
+    {
+        "q": "Does the system remove CO2?",
+        "a": "No, just particles/contaminants."
+    },
+    {
+        "q": "Which unit controls the lower recirc fans?",
+        "a": "The PCU."
+    },
+    {
+        "q": "Does the fan speed change during engine start?",
+        "a": "Yes, it decreases to 8,720 rpm."
+    },
+    {
+        "q": "What happens if a lower recirc fan fails?",
+        "a": "Pack flow increases to compensate, increasing fuel burn."
+    },
+    {
+        "q": "Where is the lower recirc air pulled from?",
+        "a": "The cabin floor area/EE bay."
+    },
+    {
+        "q": "Does the pilot have a switch for these fans?",
+        "a": "Yes, the \"RECIRC FANS\" switch on the P"
+    },
+    {
+        "q": "What is the \"High Flow Shutoff Valve\"?",
+        "a": "A valve that blocks recirc air if high fresh air flow is needed."
+    },
+    {
+        "q": "Is the recirc fan motor cooled?",
+        "a": "Yes, by the air it moves."
+    },
+    {
+        "q": "What is the typical HEPA filter replacement interval?",
+        "a": "Dependent on environment/usage."
+    },
+    {
+        "q": "Does the recirc system operate on the ground?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the fan voltage?",
+        "a": "115V AC."
+    },
+    {
+        "q": "Where is the recirc heat exchanger accessed?",
+        "a": "In the pack bay."
+    },
+    {
+        "q": "Is the fan motor dual-speed?",
+        "a": "It is variable speed."
+    },
+    {
+        "q": "What is the \"Mix Bay\"?",
+        "a": "The area where recirc air is collected."
+    },
+    {
+        "q": "Can recirc air be used for heating?",
+        "a": "Yes, if the cabin is already warm."
+    },
+    {
+        "q": "Does the recirc system filter out smoke?",
+        "a": "HEPA filters catch some particles but not gases."
+    },
+    {
+        "q": "Is there a \"Recirc Fan\" maintenance page?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the fan's RPM during normal cruise?",
+        "a": "Modulated by the PCU."
+    },
+    {
+        "q": "Does the fan have a check valve?",
+        "a": "Yes, to prevent backflow into the mixer."
+    },
+    {
+        "q": "Are the HEPA filters identical to upper recirc filters?",
+        "a": "Often yes."
+    },
+    {
+        "q": "Does the recirc HE use ram air?",
+        "a": "No, it uses PECS."
+    },
+    {
+        "q": "What is the fan diameter?",
+        "a": "Approx 10-12 inches."
+    },
+    {
+        "q": "Can one fan operate both sides?",
+        "a": "No, they are dedicated to their side's compact mixer."
+    },
+    {
+        "q": "What happens during smoke removal?",
+        "a": "Recirc fans are typically turned off."
+    }
+];
+
+        const mixerSystem = [
+    {
+        "q": "What is a Compact Mixer?",
+        "a": "A plenum that combines cold pack air and filtered recirc air."
+    },
+    {
+        "q": "How many compact mixers per airplane?",
+        "a": "Two (Left and Right)."
+    },
+    {
+        "q": "Where is the compact mixer located?",
+        "a": "In the pack bay, between the pack and the mix manifold."
+    },
+    {
+        "q": "Does it have any moving parts?",
+        "a": "No."
+    },
+    {
+        "q": "What is the temperature of the air leaving the mixer?",
+        "a": "The \"mixed air temperature\" target."
+    },
+    {
+        "q": "Does it have sensors?",
+        "a": "Yes, the pack outlet/mixer temp sensors."
+    },
+    {
+        "q": "What happens if a pack fails?",
+        "a": "The mixer only receives recirc air on that side."
+    },
+    {
+        "q": "Is the flight deck air taken from the compact mixer?",
+        "a": "Yes, before it enters the mix manifold."
+    },
+    {
+        "q": "What is the mixer made of?",
+        "a": "Composite or aluminum."
+    },
+    {
+        "q": "Does it have an insulation blanket?",
+        "a": "Yes, to prevent condensation."
+    },
+    {
+        "q": "Is there a \"Mixer Overheat\" sensor?",
+        "a": "No, but there are temp sensors."
+    },
+    {
+        "q": "Can the mixer be bypassed?",
+        "a": "No."
+    },
+    {
+        "q": "What prevents recirc air from flowing back into the pack?",
+        "a": "Pack outlet check valve."
+    },
+    {
+        "q": "What prevents pack air from flowing back into the recirc system?",
+        "a": "Recirc fan check valve."
+    },
+    {
+        "q": "Does the mixer handle trim air?",
+        "a": "No, trim air is added downstream."
+    },
+    {
+        "q": "Is the mixer accessible for maintenance?",
+        "a": "Yes, via pack bay doors."
+    },
+    {
+        "q": "Are the mixers mirrored?",
+        "a": "Yes."
+    },
+    {
+        "q": "How many inlets are on a mixer?",
+        "a": "Two (one for pack, one for recirc)."
+    },
+    {
+        "q": "How many outlets are on a mixer?",
+        "a": "Two (one for mix manifold, one for flight deck)."
+    },
+    {
+        "q": "Does the mixer help with noise?",
+        "a": "Its design helps stabilize airflow/reduce turbulence."
+    },
+    {
+        "q": "Is the mixer part of the pressurized vessel?",
+        "a": "No, but the air inside is."
+    },
+    {
+        "q": "What is the weight of the mixer?",
+        "a": "Approx 20-30 lbs."
+    },
+    {
+        "q": "Does the mixer provide air to the cargo bays?",
+        "a": "No, that air is taken from the mix manifold."
+    },
+    {
+        "q": "Can the mixer leak?",
+        "a": "Yes, causing loss of flow and bay heat."
+    },
+    {
+        "q": "What is the diameter of the pack inlet to the mixer?",
+        "a": "Approx 5-6 inches."
+    },
+    {
+        "q": "What is the diameter of the recirc inlet?",
+        "a": "Approx 7-8 inches."
+    },
+    {
+        "q": "Is there a BITE test for the mixer?",
+        "a": "No, it is a passive component."
+    },
+    {
+        "q": "Can the mixer be cleaned?",
+        "a": "Yes, but rarely necessary due to upstream filters."
+    },
+    {
+        "q": "Does the AVS connect to the mixer?",
+        "a": "No, to the mix manifold."
+    },
+    {
+        "q": "Does the mixer handle ground-conditioned air?",
+        "a": "No, that enters the mix manifold directly."
+    }
+];
+
+        const distributionSystem = [
+    {
+        "q": "What is the Mix Manifold?",
+        "a": "A large plenum that distributes mixed air to all cabin zones."
+    },
+    {
+        "q": "How many risers lead from the mix manifold to the overhead?",
+        "a": "Typically five."
+    },
+    {
+        "q": "Where is the mix manifold located?",
+        "a": "Center wing area, aft of the forward cargo."
+    },
+    {
+        "q": "Where does ground-supplied air enter the system?",
+        "a": "Directly into the mix manifold."
+    },
+    {
+        "q": "What are \"Risers\"?",
+        "a": "Vertical ducts that move air to the cabin ceiling."
+    },
+    {
+        "q": "What is a \"Muffler\" in distribution?",
+        "a": "A device to reduce air velocity noise."
+    },
+    {
+        "q": "How is air balanced between zones?",
+        "a": "By fixed orifices in the ducts."
+    },
+    {
+        "q": "Does the mix manifold have moving parts?",
+        "a": "No."
+    },
+    {
+        "q": "Is the manifold insulated?",
+        "a": "Yes."
+    },
+    {
+        "q": "Where does the Alternate Ventilation System (AVS) connect?",
+        "a": "To the mix manifold."
+    },
+    {
+        "q": "What prevents conditioned air from leaking out of the ground port?",
+        "a": "A check valve at the ground connection."
+    },
+    {
+        "q": "Does the distribution system have any sensors?",
+        "a": "No, sensors are in the risers or zone ducts."
+    },
+    {
+        "q": "What is the \"Personal Air Outlet\" (PAO) source?",
+        "a": "The zone supply ducts."
+    },
+    {
+        "q": "How many cabin zones are there?",
+        "a": "Seven (Flight Deck + 6 Cabin)."
+    },
+    {
+        "q": "Is the EE bay part of the distribution system?",
+        "a": "No, it has its own cooling."
+    },
+    {
+        "q": "Can a riser be blocked?",
+        "a": "Possible, causing uneven cooling."
+    },
+    {
+        "q": "Are distribution ducts made of composite?",
+        "a": "Yes, or flexible fabric."
+    },
+    {
+        "q": "What is the diameter of the mix manifold?",
+        "a": "Approx 12-15 inches."
+    },
+    {
+        "q": "How is smoke removed from the cabin?",
+        "a": "Through the outflow valves via the lower cabin vents."
+    },
+    {
+        "q": "Does the distribution system have its own heaters?",
+        "a": "No, it uses trim air or supplemental heaters."
+    },
+    {
+        "q": "What is the \"Master Temperature\"?",
+        "a": "The baseline temp for the distribution system."
+    },
+    {
+        "q": "Does the mix manifold receive air from upper recirc fans?",
+        "a": "No, they discharge into the crown area."
+    },
+    {
+        "q": "How is a duct leak detected?",
+        "a": "By the overheat sensors near the ducts."
+    },
+    {
+        "q": "Are risers accessible?",
+        "a": "Yes, behind cabin side panels."
+    },
+    {
+        "q": "What is the \"Zone AA\" valve?",
+        "a": "Refers to the first cabin zone trim."
+    },
+    {
+        "q": "Is ground air filtered?",
+        "a": "Dependent on the ground source; no aircraft filter."
+    },
+    {
+        "q": "Does the distribution system handle CO2?",
+        "a": "No."
+    },
+    {
+        "q": "Can the distribution system be manually adjusted?",
+        "a": "No, fixed orifices only."
+    },
+    {
+        "q": "What is the \"Gasper\" system?",
+        "a": "Another name for the PAO."
+    },
+    {
+        "q": "Is the distribution system part of the CPCS?",
+        "a": "No."
+    }
+];
+
+        const boostSystem = [
+    {
+        "q": "What is the primary purpose of the Boost Fan?",
+        "a": "To ensure positive airflow to the flight deck."
+    },
+    {
+        "q": "Where is it located?",
+        "a": "In the forward EE compartment."
+    },
+    {
+        "q": "What is the Boost Fan Isolation Valve?",
+        "a": "A valve that opens to allow the fan to draw air."
+    },
+    {
+        "q": "When does the Boost Fan operate?",
+        "a": "Ground ops, smoke detection, or Equipment Cooling override."
+    },
+    {
+        "q": "Where does the fan pull air from?",
+        "a": "The Zone A supply duct or EE bay."
+    },
+    {
+        "q": "Which unit controls the fan?",
+        "a": "The CCS."
+    },
+    {
+        "q": "Is the fan motor AC or DC?",
+        "a": "115V AC."
+    },
+    {
+        "q": "What is the isolation valve fail position?",
+        "a": "Closed."
+    },
+    {
+        "q": "Does the Boost Fan provide heating?",
+        "a": "No, it just moves air."
+    },
+    {
+        "q": "Is the fan monitored?",
+        "a": "Yes, for flow and current."
+    },
+    {
+        "q": "What happens to the fan during engine start?",
+        "a": "It is shed."
+    },
+    {
+        "q": "Does the fan run during cruise?",
+        "a": "Normally no."
+    },
+    {
+        "q": "What is the \"Override\" mode?",
+        "a": "When the fan is used to purge smoke."
+    },
+    {
+        "q": "How is the fan accessed?",
+        "a": "Forward EE compartment door."
+    },
+    {
+        "q": "Is the fan motor cooled?",
+        "a": "Yes, by the air it moves."
+    },
+    {
+        "q": "Does the fan have a check valve?",
+        "a": "Yes, to prevent reverse flow."
+    },
+    {
+        "q": "Is the isolation valve a butterfly type?",
+        "a": "Yes."
+    },
+    {
+        "q": "Can the pilot turn the fan on manually?",
+        "a": "Indirectly, by using \"Override\"."
+    },
+    {
+        "q": "Does the fan affect cabin pressure?",
+        "a": "No."
+    },
+    {
+        "q": "What is the fan's noise level?",
+        "a": "Quiet, as it is in the EE bay."
+    },
+    {
+        "q": "Is there a maintenance test for the boost fan?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the fan provide air to the observers?",
+        "a": "Yes."
+    },
+    {
+        "q": "Is the fan motor dual-speed?",
+        "a": "No."
+    },
+    {
+        "q": "Does the fan have HEPA filters?",
+        "a": "No."
+    },
+    {
+        "q": "What is the fan weight?",
+        "a": "Approx 10 lbs."
+    },
+    {
+        "q": "Is the isolation valve electric?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does the fan help cool the EE bay?",
+        "a": "No."
+    },
+    {
+        "q": "What is the fan's RPM?",
+        "a": "Approx 10,000 rpm."
+    },
+    {
+        "q": "Is the fan interchangeable with the recirc fan?",
+        "a": "No."
+    },
+    {
+        "q": "Does the fan operate on battery power?",
+        "a": "No, requires AC."
+    }
+];
+
+        const trimSystem = [
+    {
+        "q": "What is the function of the Trim Air system?",
+        "a": "To add hot air to the conditioned supply to reach specific zone targets."
+    },
+    {
+        "q": "Where is trim air taken from?",
+        "a": "Downstream of the ozone converter."
+    },
+    {
+        "q": "What is the TAPRV?",
+        "a": "Trim Air Pressure Regulator Valve."
+    },
+    {
+        "q": "How many TAPRVs are there?",
+        "a": "Two (one per pack)."
+    },
+    {
+        "q": "What pressure does the TAPRV maintain?",
+        "a": "4 psi above cabin pressure."
+    },
+    {
+        "q": "How many zone trim valves are there?",
+        "a": "Seven."
+    },
+    {
+        "q": "Which unit controls the trim valves?",
+        "a": "The PCU."
+    },
+    {
+        "q": "What is the fail-safe position of a trim valve?",
+        "a": "Closed or fixed position."
+    },
+    {
+        "q": "Does the TAPRV have a manual override?",
+        "a": "No."
+    },
+    {
+        "q": "What happens if a zone duct exceeds 180\u00b0F?",
+        "a": "The trim valve for that zone closes."
+    },
+    {
+        "q": "Is trim air air filtered?",
+        "a": "It passes through the ozone converter, but no particulate filter."
+    },
+    {
+        "q": "Does the TAPRV close during an engine fire?",
+        "a": "No, but the CACs do."
+    },
+    {
+        "q": "Where is the Flight Deck trim valve?",
+        "a": "In the pack bay."
+    },
+    {
+        "q": "What is a \"Trim Air Trip\"?",
+        "a": "Automatic closure of the TAPRV due to an overheat."
+    },
+    {
+        "q": "How is a trim valve reset?",
+        "a": "Cycle the zone temp switch on the P"
+    },
+    {
+        "q": "Can the airplane fly without trim air?",
+        "a": "Yes, but temp control is poor."
+    },
+    {
+        "q": "What unit provides the temp signal for the trim valve?",
+        "a": "Zone duct temp sensor."
+    },
+    {
+        "q": "Is there a trim air \"Master Switch\"?",
+        "a": "Yes, on the P5 panel."
+    },
+    {
+        "q": "What is the trim valve actuator type?",
+        "a": "Modulating electric."
+    },
+    {
+        "q": "Does trim air reduce pack flow?",
+        "a": "No, it uses a small portion of CAC flow."
+    },
+    {
+        "q": "Are trim valves accessible in the crown?",
+        "a": "Yes, for the cabin zones."
+    },
+    {
+        "q": "What is the pressure range for the TAPRV?",
+        "a": "2.0 to 5.5 psi."
+    },
+    {
+        "q": "Does the PCU monitor trim air temperature?",
+        "a": "Yes."
+    },
+    {
+        "q": "Is the trim air manifold insulated?",
+        "a": "Yes, it is very hot."
+    },
+    {
+        "q": "Does trim air contain smoke during a CAC failure?",
+        "a": "Potentially."
+    },
+    {
+        "q": "What is the trim valve diameter?",
+        "a": "Approx 1.5 inches."
+    },
+    {
+        "q": "Is the Flight Deck trim valve separate from cabin trim valves?",
+        "a": "Yes."
+    },
+    {
+        "q": "Do attendants have control over trim air?",
+        "a": "Yes, within +/- 10\u00b0F."
+    },
+    {
+        "q": "What is the \"Master Temp\" for trim?",
+        "a": "The baseline selected by the crew."
+    },
+    {
+        "q": "Is trim air used in Economy Cooling?",
+        "a": "Yes."
+    }
+];
+
+        const humidificationSystem = [
+    {
+        "q": "What is the primary purpose of the Humidifier?",
+        "a": "To increase relative humidity in the flight deck."
+    },
+    {
+        "q": "How many humidifiers are on the airplane?",
+        "a": "One."
+    },
+    {
+        "q": "What is the humidifier pad?",
+        "a": "An evaporative medium that water flows through."
+    },
+    {
+        "q": "What is the water source?",
+        "a": "The potable water system."
+    },
+    {
+        "q": "What drives the water to the humidifier?",
+        "a": "Potable water pressure."
+    },
+    {
+        "q": "When does the humidifier operate?",
+        "a": "During cruise."
+    },
+    {
+        "q": "Does it operate during descent?",
+        "a": "No, it shuts off at the start of descent."
+    },
+    {
+        "q": "What unit controls the humidifier?",
+        "a": "The Humidifier Interface Unit (HIU)."
+    },
+    {
+        "q": "What is the HIU's role?",
+        "a": "To control the water solenoid and monitor the pad."
+    },
+    {
+        "q": "Where is the humidifier located?",
+        "a": "In the flight deck supply duct, crown area."
+    },
+    {
+        "q": "Does the pilot have a switch for it?",
+        "a": "Yes, on the P5 panel."
+    },
+    {
+        "q": "What is the \"Drain\" system for?",
+        "a": "Excess water is sent to a heated drain mast."
+    },
+    {
+        "q": "Can the pad be replaced?",
+        "a": "Yes, it is a periodic maintenance item."
+    },
+    {
+        "q": "What happens if the humidifier leaks?",
+        "a": "Potential damage to EE components; usually detected by the water level sensor."
+    },
+    {
+        "q": "Is the humidifier pad accessible?",
+        "a": "Yes, via an overhead access panel."
+    },
+    {
+        "q": "Does the system use steam?",
+        "a": "No, it is cold evaporation."
+    },
+    {
+        "q": "What is the HIU's source of data?",
+        "a": "The CCS."
+    },
+    {
+        "q": "Does the humidifier operate if potable water is low?",
+        "a": "No."
+    },
+    {
+        "q": "Is there a \"Humidifier Fault\" light?",
+        "a": "Yes, status on EICAS."
+    },
+    {
+        "q": "What is the target humidity level?",
+        "a": "Approx 10-15% relative humidity."
+    },
+    {
+        "q": "Does the humidifier operate on the ground?",
+        "a": "No."
+    },
+    {
+        "q": "Is there a filter for the water?",
+        "a": "Yes, an inline strainer."
+    },
+    {
+        "q": "What is the solenoid power?",
+        "a": "28V DC."
+    },
+    {
+        "q": "Does the humidifier use conditioned air?",
+        "a": "Yes, it adds water to the fresh air duct."
+    },
+    {
+        "q": "Is the system used for the passenger cabin?",
+        "a": "No, flight deck and crew rest only."
+    },
+    {
+        "q": "What is the pad made of?",
+        "a": "Specialized cellulose or ceramic fiber."
+    },
+    {
+        "q": "Does the system have a heater?",
+        "a": "No, but the air is already warm."
+    },
+    {
+        "q": "What happens if the HIU fails?",
+        "a": "The system shuts down."
+    },
+    {
+        "q": "Can the flight crew adjust the humidity level?",
+        "a": "No, only ON/OFF."
+    },
+    {
+        "q": "Is the drain mast shared with the galleys?",
+        "a": "Yes, usually."
+    }
+];
+
+        const heatingSystem = [
+    {
+        "q": "What are Foot Rest heaters?",
+        "a": "Radiant electric heaters for pilot comfort."
+    },
+    {
+        "q": "What are Shoulder heaters?",
+        "a": "Inline electric heaters in the flight deck window ducts."
+    },
+    {
+        "q": "What are Floor heaters?",
+        "a": "Electric radiant panels at passenger entries."
+    },
+    {
+        "q": "Which unit controls these heaters?",
+        "a": "The CCS via various controllers."
+    },
+    {
+        "q": "What is the trip temperature for a shoulder heater?",
+        "a": "200\u00b0F."
+    },
+    {
+        "q": "How many foot rest heaters are in the flight deck?",
+        "a": "Two (Capt and F/O)."
+    },
+    {
+        "q": "Are floor heaters used during flight?",
+        "a": "Yes, to prevent drafts at doors."
+    },
+    {
+        "q": "What is the shoulder heater power source?",
+        "a": "115V AC."
+    },
+    {
+        "q": "Can the pilot adjust foot rest temp?",
+        "a": "Yes, via the CAP or side panel switches."
+    },
+    {
+        "q": "Is there a \"Floor Heat\" fault on EICAS?",
+        "a": "Yes."
+    },
+    {
+        "q": "Do galley heaters use trim air?",
+        "a": "No, they are purely electric duct heaters."
+    },
+    {
+        "q": "How many floor heater zones are there?",
+        "a": "Usually corresponding to each entry door."
+    },
+    {
+        "q": "What is the \"radiant\" part of a foot heater?",
+        "a": "It heats the surface, not the air."
+    },
+    {
+        "q": "Does the PCU monitor floor heaters?",
+        "a": "No, the CCS does."
+    },
+    {
+        "q": "Are the heaters self-testing?",
+        "a": "Yes."
+    },
+    {
+        "q": "Can a failed heater be reset?",
+        "a": "Sometimes, if it was a temporary overheat."
+    },
+    {
+        "q": "What is the wattage of a shoulder heater?",
+        "a": "Approx 500-1000W."
+    },
+    {
+        "q": "Are heaters shedding during high load?",
+        "a": "Yes, they are low-priority loads."
+    },
+    {
+        "q": "What is the purpose of the Galley Area Duct Heater?",
+        "a": "To compensate for heat loss in galley areas."
+    },
+    {
+        "q": "Does the floor heater have a temp sensor?",
+        "a": "Yes, embedded in the panel."
+    },
+    {
+        "q": "Is there a manual switch for floor heat?",
+        "a": "No, it is automatic."
+    },
+    {
+        "q": "What is the floor heater voltage?",
+        "a": "115V AC."
+    },
+    {
+        "q": "Is floor heat used on the ground?",
+        "a": "Yes."
+    },
+    {
+        "q": "What happens if a foot heater gets wet?",
+        "a": "It has sealed insulation for protection."
+    },
+    {
+        "q": "Can shoulder heaters burn out?",
+        "a": "Yes, if airflow is restricted."
+    },
+    {
+        "q": "Is there a \"Shoulder Heat\" knob?",
+        "a": "Yes, on the side console."
+    },
+    {
+        "q": "Are floor panels replaceable?",
+        "a": "Yes, but require floor covering removal."
+    },
+    {
+        "q": "Do heaters operate if the pack is off?",
+        "a": "Radiant heaters yes; duct heaters no."
+    },
+    {
+        "q": "What is the primary cause of heater trips?",
+        "a": "Low airflow."
+    },
+    {
+        "q": "Is floor heat linked to ambient temperature?",
+        "a": "Yes."
+    }
+];
+
+        const dryersSystem = [
+    {
+        "q": "What is the primary function of a Zonal Dryer?",
+        "a": "To remove moisture from the cabin crown to prevent condensation."
+    },
+    {
+        "q": "How many dryers are installed?",
+        "a": "Two."
+    },
+    {
+        "q": "What is the \"Desiccant Wheel\"?",
+        "a": "The component that absorbs water (Ref. common design)."
+    },
+    {
+        "q": "How is the desiccant dried?",
+        "a": "By an electric regeneration heater."
+    },
+    {
+        "q": "Where does the moist air go?",
+        "a": "It is exhausted to the mix manifold or distribution system."
+    },
+    {
+        "q": "Where are the dryers located?",
+        "a": "One at Station 852 and one at Station"
+    },
+    {
+        "q": "What unit controls the dryer?",
+        "a": "The Zonal Dryer Controller."
+    },
+    {
+        "q": "Does the dryer use a fan?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the flow rate?",
+        "a": "Approx 180 cfm."
+    },
+    {
+        "q": "Does the dryer operate on the ground?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the dryer's power source?",
+        "a": "115V AC."
+    },
+    {
+        "q": "Is the dryer part of the pack?",
+        "a": "No."
+    },
+    {
+        "q": "What happens if the dryer fails?",
+        "a": "Condensation (\"rain\") may occur in the crown."
+    },
+    {
+        "q": "Does the dryer have a filter?",
+        "a": "Yes, to protect the desiccant."
+    },
+    {
+        "q": "How many temp sensors are in the dryer?",
+        "a": "Multiple for heater and motor protection."
+    },
+    {
+        "q": "What is the \"Trip\" temp for the regeneration heater?",
+        "a": "320\u00b0F."
+    },
+    {
+        "q": "Can the pilot turn off the dryer?",
+        "a": "No manual switch, automatic based on conditions."
+    },
+    {
+        "q": "Does the dryer help cabin humidity?",
+        "a": "No, it reduces it."
+    },
+    {
+        "q": "Is there an EICAS message for zonal dryers?",
+        "a": "Yes, status and maintenance."
+    },
+    {
+        "q": "Is the desiccant wheel continuously rotating?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the dryer's weight?",
+        "a": "Approx 40-50 lbs."
+    },
+    {
+        "q": "Are the two dryers identical?",
+        "a": "Yes."
+    },
+    {
+        "q": "How is it accessed?",
+        "a": "Crown access panels."
+    },
+    {
+        "q": "Does the dryer remove smells?",
+        "a": "No."
+    },
+    {
+        "q": "What is the power for the dryer motor?",
+        "a": "115V AC."
+    },
+    {
+        "q": "Is there a water drain for the dryer?",
+        "a": "No, water is exhausted as vapor."
+    },
+    {
+        "q": "Does the dryer run during takeoff?",
+        "a": "Yes."
+    },
+    {
+        "q": "Does it have a BITE test?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the lifespan of the desiccant?",
+        "a": "Several years."
+    },
+    {
+        "q": "Can a clogged filter cause a trip?",
+        "a": "Yes, due to low airflow over the heater."
+    }
+];
+
+        const pecsSystem = [
+    {
+        "q": "What is the purpose of PECS?",
+        "a": "To cool large motor controllers and electronics."
+    },
+    {
+        "q": "How many loops does PECS have?",
+        "a": "Two (Left and Right)."
+    },
+    {
+        "q": "What coolant is used?",
+        "a": "Propylene Glycol and Water (PGW) 50/"
+    },
+    {
+        "q": "What component cools the liquid?",
+        "a": "The PECS Heat Exchanger."
+    },
+    {
+        "q": "What cools the Heat Exchanger?",
+        "a": "Ram air."
+    },
+    {
+        "q": "Does PECS use the cooling packs?",
+        "a": "No, it is independent."
+    },
+    {
+        "q": "Which unit controls PECS?",
+        "a": "The CCS."
+    },
+    {
+        "q": "How many pumps are per loop?",
+        "a": "Two (Primary and Backup)."
+    },
+    {
+        "q": "What is the normal operating pressure?",
+        "a": "Approx 150-200 psi."
+    },
+    {
+        "q": "What is the normal coolant temperature?",
+        "a": "Approx 65\u00b0F."
+    },
+    {
+        "q": "What is the \"3-way Valve\" used for?",
+        "a": "To bypass the heat exchanger if the liquid is too cold."
+    },
+    {
+        "q": "How is PECS \"Top-Off\" done?",
+        "a": "Via service ports in the wheel well."
+    },
+    {
+        "q": "Is there a filter in the PECS loop?",
+        "a": "Yes."
+    },
+    {
+        "q": "What happens if a PECS leak occurs?",
+        "a": "The system shuts down the affected loop."
+    },
+    {
+        "q": "Does PECS cool the CAC motors?",
+        "a": "No (they are air-cooled)."
+    },
+    {
+        "q": "Does PECS cool the ICS?",
+        "a": "Yes, via an interface."
+    },
+    {
+        "q": "What is the pump package power?",
+        "a": "115V AC."
+    },
+    {
+        "q": "Where are the pumps located?",
+        "a": "In the main gear wheel wells."
+    },
+    {
+        "q": "What is \"ICS Supply SOV\"?",
+        "a": "A valve that lets PECS cool the ICS system."
+    },
+    {
+        "q": "Does the pilot have a PECS switch?",
+        "a": "No, it is fully automatic."
+    },
+    {
+        "q": "Can the airplane fly with one PECS loop inop?",
+        "a": "No, major electronics would overheat."
+    },
+    {
+        "q": "What is the coolant reservoir type?",
+        "a": "Bootstrap (self-pressurizing)."
+    },
+    {
+        "q": "How is the liquid level monitored?",
+        "a": "By level sensors in the pump package."
+    },
+    {
+        "q": "Does the PECS heat exchanger have a fan?",
+        "a": "It uses the pack's Ram Air Fan."
+    },
+    {
+        "q": "Are PECS pumps interchangeable?",
+        "a": "Yes."
+    },
+    {
+        "q": "What happens if PECS temp exceeds 140\u00b0F?",
+        "a": "High load shedding and EICAS alerts."
+    },
+    {
+        "q": "Is the coolant flammable?",
+        "a": "No."
+    },
+    {
+        "q": "Where are the PECS heat exchangers?",
+        "a": "In the ram air ducts."
+    },
+    {
+        "q": "What is the \"SCU\"?",
+        "a": "Supplemental Cooling Unit, often linked to PECS/ICS."
+    },
+    {
+        "q": "Does PECS use air bearings?",
+        "a": "No, the pumps have traditional bearings."
+    }
+];
+
+        const cpcsSystem = [
+    {
+        "q": "What is the main function of the CPCS?",
+        "a": "To maintain cabin altitude and rate of change."
+    },
+    {
+        "q": "How many Outflow Valves (OFV) are installed?",
+        "a": "Two (one forward, one aft)."
+    },
+    {
+        "q": "How many motors are in each OFV?",
+        "a": "Three."
+    },
+    {
+        "q": "What are the two types of OFV motors?",
+        "a": "Two automatic and one manual."
+    },
+    {
+        "q": "Which unit provides the control logic for the OFVs?",
+        "a": "The Valve Control Unit (VCU)."
+    },
+    {
+        "q": "What is the maximum normal cabin altitude?",
+        "a": "6,000 ft."
+    },
+    {
+        "q": "What is a Positive Pressure Relief Valve (PPRV)?",
+        "a": "A safety valve for over-pressurization."
+    },
+    {
+        "q": "How many PPRVs are there?",
+        "a": "Two."
+    },
+    {
+        "q": "What is a Negative Pressure Relief Valve (NPRV)?",
+        "a": "Prevents ambient pressure from exceeding cabin pressure."
+    },
+    {
+        "q": "How many NPRVs are there?",
+        "a": "Four."
+    },
+    {
+        "q": "Where is cabin pressure measured?",
+        "a": "By Remote Sensor Units (RSUs)."
+    },
+    {
+        "q": "What is the RSU source?",
+        "a": "Static ports and cabin air."
+    },
+    {
+        "q": "Does the VCU use CCS data?",
+        "a": "Yes, for primary control."
+    },
+    {
+        "q": "How is manual control performed?",
+        "a": "Via the \"MAN\" switch on the P5 panel."
+    },
+    {
+        "q": "What is \"LDG ALT\"?",
+        "a": "Landing Altitude, set by the pilot."
+    },
+    {
+        "q": "What is the power for the primary OFV motor?",
+        "a": "115V AC."
+    },
+    {
+        "q": "What is the power for the manual motor?",
+        "a": "28V DC."
+    },
+    {
+        "q": "What are the \"chevrons\" on the OFV for?",
+        "a": "Noise reduction."
+    },
+    {
+        "q": "Can the airplane fly with one OFV inoperative?",
+        "a": "Yes, per MEL."
+    },
+    {
+        "q": "What triggers a \"Cabin Altitude\" warning?",
+        "a": "Altitude exceeding 10,000 ft."
+    },
+    {
+        "q": "Is the forward OFV identical to the aft?",
+        "a": "Yes."
+    },
+    {
+        "q": "What is the \"Altitude Limit\" function?",
+        "a": "Automatic closure of OFVs if cabin alt hits a safety limit."
+    },
+    {
+        "q": "Does the OFV have a position indicator?",
+        "a": "Yes, on the VCU/synoptic."
+    },
+    {
+        "q": "What is the VCU's role in a ditching?",
+        "a": "To close both OFVs automatically when commanded."
+    },
+    {
+        "q": "Is the OFV motor brushless?",
+        "a": "Yes (Ref. modern V frequency AC)."
+    },
+    {
+        "q": "What is the pressure relief limit?",
+        "a": "Approx 9.4 psi differential."
+    },
+    {
+        "q": "Does the RSU have a filter?",
+        "a": "Yes."
+    },
+    {
+        "q": "How is the aft OFV protected from ice?",
+        "a": "Heated by exhaust air from the cabin."
+    },
+    {
+        "q": "What unit handles the \"Ditching\" signal?",
+        "a": "The CCS."
+    },
+    {
+        "q": "Can the VCU be reset?",
+        "a": "Yes, via a circuit breaker cycle."
+    }
+];
+
+        // App state
+        let currentSubject = 'Cabin Air Compressor (CAC) System';
+        let currentDeck = cacSystem;
+        let idx = 0;
+
+        const qText = document.getElementById('q-text');
+        const aText = document.getElementById('a-text');
+        const catLabel = document.getElementById('cat-label');
+        const currentSystem = document.getElementById('current-system');
+        const cardCount = document.getElementById('card-count');
+        const progressFill = document.getElementById('progress-fill');
+        const mainCard = document.getElementById('main-card');
+        const subjectSelect = document.getElementById('subject-select');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        function updateUI() {
+            const item = currentDeck[idx];
+            // ensure face-down
+            mainCard.classList.remove('flipped');
+
+            // smooth swap
+            setTimeout(() => {
+                qText.innerText = item.q;
+                aText.innerText = item.a;
+                catLabel.innerText = item.s || currentSubject;
+                currentSystem.innerText = `Subject: ${currentSubject}`;
+                cardCount.innerText = `${idx + 1} / ${currentDeck.length}`;
+                progressFill.style.width = `${((idx + 1) / currentDeck.length) * 100}%`;
+            }, 120);
+        }
+
+        function changeCard(step) {
+            idx += step;
+            if (idx < 0) idx = currentDeck.length - 1;
+            if (idx >= currentDeck.length) idx = 0;
+            updateUI();
+        }
+
+        // keyboard navigation and spacebar flip (prevent default scrolling)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') { changeCard(1); }
+            else if (e.key === 'ArrowLeft') { changeCard(-1); }
+            else if (e.code === 'Space' || e.key === ' ') {
+                e.preventDefault();
+                mainCard.classList.toggle('flipped');
+            }
+        });
+
+        // Subject select handler
+        subjectSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'cac') {
+                currentSubject = 'Cabin Air Compressor (CAC) System';
+                currentDeck = cacSystem;
+            } else if (val === 'pcu') {
+                currentSubject = 'Pack Control Unit (PCU)';
+                currentDeck = pcuSystem;
+            } else if (val === 'deflector') {
+                currentSubject = 'CAC Inlet Deflector Door System';
+                currentDeck = deflectorSystem;
+            } else if (val === 'ahv') {
+                currentSubject = 'CAC Add Heat Valve (AHV)';
+                currentDeck = ahvSystem;
+            } else if (val === 'ozone') {
+                currentSubject = 'Ozone Converter';
+                currentDeck = ozoneSystem;
+            } else if (val === 'sensors') {
+                currentSubject = 'CAC Control Sensors (Pressure/Flow/Temp)';
+                currentDeck = sensorsSystem;
+            } else if (val === 'packs') {
+                currentSubject = 'Cooling Packs General';
+                currentDeck = packsSystem;
+            } else if (val === 'ram') {
+                currentSubject = 'Ram Air System (Doors & Header)';
+                currentDeck = ramSystem;
+            } else if (val === 'fan') {
+                currentSubject = 'Ram Air Fan & Controller';
+                currentDeck = fanSystem;
+            } else if (val === 'heatex') {
+                currentSubject = 'Heat Exchangers (Primary & Secondary)';
+                currentDeck = heatexSystem;
+            } else if (val === 'acm') {
+                currentSubject = 'Air Cycle Machine (ACM)';
+                currentDeck = acmSystem;
+            } else if (val === 'condenser') {
+                currentSubject = 'Condenser & Water Extraction';
+                currentDeck = condenserSystem;
+            } else if (val === 'valves') {
+                currentSubject = 'Pack Control Valves (LLV, ECV, ABPV)';
+                currentDeck = valvesSystem;
+            } else if (val === 'overheat') {
+                currentSubject = 'Overheat Protection System (WAP)';
+                currentDeck = overheatSystem;
+            } else if (val === 'recirc') {
+                currentSubject = 'Lower Recirculation System';
+                currentDeck = recircSystem;
+            } else if (val === 'mixer') {
+                currentSubject = 'Compact Mixer';
+                currentDeck = mixerSystem;
+            } else if (val === 'distribution') {
+                currentSubject = 'Air Distribution (Mix Manifold & Risers)';
+                currentDeck = distributionSystem;
+            } else if (val === 'boost') {
+                currentSubject = 'Flight Deck Boost Fan System';
+                currentDeck = boostSystem;
+            } else if (val === 'trim') {
+                currentSubject = 'Trim Air System';
+                currentDeck = trimSystem;
+            } else if (val === 'humidification') {
+                currentSubject = 'Humidification System';
+                currentDeck = humidificationSystem;
+            } else if (val === 'heating') {
+                currentSubject = 'Supplemental Heating (Foot/Shoulder/Floor)';
+                currentDeck = heatingSystem;
+            } else if (val === 'dryers') {
+                currentSubject = 'Zonal Dryers';
+                currentDeck = dryersSystem;
+            } else if (val === 'pecs') {
+                currentSubject = 'Power Electronics Cooling System (PECS)';
+                currentDeck = pecsSystem;
+            } else if (val === 'cpcs') {
+                currentSubject = 'Cabin Pressure Control System (CPCS)';
+                currentDeck = cpcsSystem;
+            }
+            idx = 0;
+            updateUI();
+        });
+
+        // Prev/Next buttons
+        prevBtn.addEventListener('click', () => changeCard(-1));
+        nextBtn.addEventListener('click', () => changeCard(1));
+
+        // initialize
+        (function init() {
+            // default select to fluid (already set in markup), set state accordingly
+            subjectSelect.value = 'cac';
+            currentSubject = 'Cabin Air Compressor (CAC) System';
+            currentDeck = cacSystem;
+            idx = 0;
+            updateUI();
+        })();
+    </script>
 </body>
+
 </html>
